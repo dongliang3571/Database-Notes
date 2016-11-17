@@ -8,6 +8,14 @@
 
 ## MySql
 
+MySQL Server doesn't support the `SELECT ... INTO TABLE` Sybase SQL extension. Instead, MySQL Server supports the `INSERT INTO ... SELECT` standard SQL syntax, which is basically the same thing.
+
+```sql
+INSERT INTO tbl_temp2 (fld_id)
+    SELECT tbl_temp1.fld_order_id
+    FROM tbl_temp1 WHERE tbl_temp1.fld_order_id > 100;
+```
+
 
 ### Stored program(procedures)
 
@@ -73,9 +81,20 @@ mysql> SELECT hello('world');
 
 Notice that above example use `CREATE FUNCTION` rather than `CREATE PROCEDURE`.
 
+Function must have a `RETURN` type, and the function body must contain a `RETURN` value statement.
+
 You can't mix in stored procedures with ordinary SQL, whilst with stored function you can.
 e.g. `SELECT get_foo(myColumn) FROM  mytable` is **NOT** valid if `get_foo()` is a **procedure**, but you can do that if `get_foo()` is a **function**. The price is that functions have more limitations than a procedure.
 
+### Procedure Parameters
+
+**Each parameter is an IN parameter by default.** To specify otherwise for a parameter, use the keyword OUT or INOUT before the parameter name.
+
+**Note:** Specifying a parameter as IN, OUT, or INOUT is valid only for a PROCEDURE. For a FUNCTION, parameters are always regarded as IN parameters.
+
+1. An `IN` parameter passes a value into a procedure. The procedure might modify the value, but the modification is not visible to the caller when the procedure returns. 
+2. An `OUT` parameter passes a value from the procedure back to the caller. **Its initial value is `NULL` within the procedure**, and its value is visible to the caller when the procedure returns. 
+3. An `INOUT` parameter is initialized by the caller, can be modified by the procedure, and any change made by the procedure is visible to the caller when the procedure returns.
 
 ```sql
 DELIMITER //
@@ -90,4 +109,28 @@ create procedure insert_salesdetail_proc (IN stor_id char(4), IN ord_num varchar
      end//
 
 DELIMITER ;
+```
+
+The following example shows a simple stored procedure that uses an OUT parameter:
+```sql
+mysql> delimiter //
+
+mysql> CREATE PROCEDURE simpleproc (OUT param1 INT)
+    -> BEGIN
+    ->   SELECT COUNT(*) INTO param1 FROM t;
+    -> END//
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delimiter ;
+
+mysql> CALL simpleproc(@a);
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> SELECT @a;
++------+
+| @a   |
++------+
+| 3    |
++------+
+1 row in set (0.00 sec)
 ```
