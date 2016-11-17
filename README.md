@@ -167,3 +167,12 @@ mysql> CREATE TRIGGER ins_sum BEFORE INSERT ON account
     -> FOR EACH ROW SET @sum = @sum + NEW.amount;
 Query OK, 0 rows affected (0.06 sec)
 ```
+
+```sql
+CREATE TRIGGER PriceTrig
+  AFTER UPDATE of pirce ON sells
+  REFERENCING
+    OLD ROW AS ooo
+    NEW ROW AS nnn
+  FOR EACH ROW
+```
