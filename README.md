@@ -134,3 +134,36 @@ mysql> SELECT @a;
 +------+
 1 row in set (0.00 sec)
 ```
+
+### Trigger
+
+A trigger is a named database object that is associated with a table, and that activates when a particular event occurs for the table. The trigger becomes associated with the table named tbl_name, which must refer to a permanent table. You cannot associate a trigger with a TEMPORARY table or a view.
+
+Syntax:
+
+```sql
+CREATE
+    [DEFINER = { user | CURRENT_USER }]
+    TRIGGER trigger_name
+    trigger_time trigger_event
+    ON tbl_name FOR EACH ROW
+    [trigger_order]
+    trigger_body
+
+trigger_time: { BEFORE | AFTER }
+
+trigger_event: { INSERT | UPDATE | DELETE }
+
+trigger_order: { FOLLOWS | PRECEDES } other_trigger_name
+```
+
+example:
+
+```sql
+mysql> CREATE TABLE account (acct_num INT, amount DECIMAL(10,2));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TRIGGER ins_sum BEFORE INSERT ON account
+    -> FOR EACH ROW SET @sum = @sum + NEW.amount;
+Query OK, 0 rows affected (0.06 sec)
+```
