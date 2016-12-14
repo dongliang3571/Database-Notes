@@ -176,3 +176,11 @@ CREATE TRIGGER PriceTrig
     NEW ROW AS nnn
   FOR EACH ROW
 ```
+
+
+### GROUP BY and ORDER BY, WHERE and HAVING
+- ORDER BY alters the order in which items are returned.
+- GROUP BY will aggregate records by the specified columns which allows you to perform aggregation functions on non-grouped columns (such as SUM, COUNT, AVG, etc).
+
+- WHERE doesn't work on aggregation like `SELECT * FROM TABLE GROUP BY ATTRUBUTE WHERE attr>2`, but it works for regular grouping like 'SELECT * FROM TABLE ORDER BY WHERE SOMETHING'
+- HAVING works for `GROUP BY`, for example `SELECT * FROM TABLE GROUP BY ATTRUBUTE HAVING attr>2`
