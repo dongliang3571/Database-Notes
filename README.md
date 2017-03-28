@@ -212,3 +212,59 @@ SELECT name, database_id, create_date
 FROM sys.databases ;  
 GO 
 ```
+
+### View a list of tables in a database
+
+
+**For a particular database**
+
+1. First approach
+
+```sql
+SELECT TABLE_NAME FROM <DATABASE_NAME>.INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'
+```
+
+2. Second approach
+
+```sql
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_CATALOG='dbName' --(for MySql, use: TABLE_SCHEMA='dbName' )
+```
+
+### View a list of columns in a database
+
+```sql
+USE [Database Name]
+SELECT COLUMN_NAME,* 
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'YourTableName' AND TABLE_SCHEMA='YourSchemaName'
+```
+
+The `INFORMATION_SCHEMA.TABLES` view allows you to get information about all tables and views within a database. By default it will show you this information for every single table and view that is in the database.
+
+| Column name | Data type | Description |
+| ------------|-----------|-------------|
+| TABLE_CATALOG	| nvarchar(128) | Table qualifier |
+| TABLE_SCHEMA | nvarchar(128) | Name of schema that contains the table |
+| TABLE_NAME | sysname | Table name |
+| TABLE_TYPE | varchar(10) | Table qualifier |
+
+```sql
+SELECT * FROM INFORMATION_SCHEMA.TABLES
+```
+
+will give you output of:
+
+TABLE_CATALOG	TABLE_SCHEMA	TABLE_NAME	          TABLE_TYPE
+master	      dbo	          spt_fallback_db	      BASE TABLE
+master	      dbo	          spt_fallback_dev	    BASE TABLE
+master	      dbo	          spt_fallback_usg	    BASE TABLE
+master	      dbo	          MSreplication_options	BASE TABLE
+master	      dbo	          spt_values	          VIEW
+master	      dbo	          spt_monitor	          BASE TABLE
+
+### What is table schema(`TABLE_SCHEMA`)
+
+schema : database : table <-> floor plan : house : room
+
+### What is dbo
+dbo is the default schema in SQL Server. You can create your own schemas to allow you to better manage your object namespace.
