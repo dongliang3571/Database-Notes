@@ -184,3 +184,23 @@ CREATE TRIGGER PriceTrig
 
 - WHERE doesn't work on aggregation like `SELECT * FROM TABLE GROUP BY ATTRUBUTE WHERE attr>2`, but it works for regular grouping like 'SELECT * FROM TABLE ORDER BY WHERE SOMETHING'
 - HAVING works for `GROUP BY`, for example `SELECT * FROM TABLE GROUP BY ATTRUBUTE HAVING attr>2`
+
+## Microsoft SQL Server
+
+### Delimited identifiers
+
+The square brackets [] are used to delimit identifiers. This is necessary if the column name is a reserved keyword or contains special characters such as a space or hyphen.
+
+Are enclosed in double quotation marks (") or brackets ([ ]). Identifiers that comply with the rules for the format of identifiers may or may not be delimited.
+
+```sql
+SELECT *
+FROM [TableX]         --Delimiter is optional.
+WHERE [KeyCol] = 124  --Delimiter is optional.
+Identifiers that do not comply with all of the rules for identifiers must be delimited in a Transact-SQL statement.
+```
+```sql
+SELECT *
+FROM [My Table]      --Identifier contains a space and uses a reserved keyword.
+WHERE [order] = 10   --Identifier is a reserved keyword.
+```
