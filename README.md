@@ -254,13 +254,14 @@ SELECT * FROM INFORMATION_SCHEMA.TABLES
 
 will give you output of:
 
-|TABLE_CATALOG	|TABLE_SCHEMA	|TABLE_NAME	    |      |TABLE_TYPE|
-|master	      |dbo	          |spt_fallback_db	      |BASE TABLE|
-|master	      |dbo	          |spt_fallback_dev	    |BASE TABLE|
-|master	      |dbo	          |spt_fallback_usg	    |BASE TABLE|
-|master	      |dbo	          |MSreplication_options	|BASE TABLE|
-|master	      |dbo	          |spt_values	          |VIEW|
-|master	      |dbo	          |spt_monitor	          |BASE TABLE|
+| TABLE_CATALOG | TABLE_SCHEMA | TABLE_NAME | TABLE_TYPE |
+| ------------|-----------|-------------|-------|
+| master	      | dbo	          | spt_fallback_db	      | BASE TABLE |
+| master	      | dbo	          | spt_fallback_dev	    | BASE TABLE |
+| master	      | dbo	          | spt_fallback_usg	    | BASE TABLE | 
+| master	      | dbo	          | MSreplication_options	| BASE TABLE |
+| master	      | dbo	          | spt_values	          | VIEW |
+| master	      | dbo	          | spt_monitor	          | BASE TABLE |
 
 ### What is table schema(`TABLE_SCHEMA`)
 
