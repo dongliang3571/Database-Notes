@@ -893,3 +893,61 @@ For each from table1, select first table1.rowcount rows from table2 ordered by i
 ```
 
 ## BEGIN...END (Transact-SQL)
+
+## IN (Transact-SQL)
+
+Determines whether a specified value matches any value in a subquery or a list.
+
+**Syntax**
+
+```sql
+-- Syntax for SQL Server, Azure SQL Database, Azure SQL Data Warehouse, Parallel Data Warehouse  
+
+test_expression [ NOT ] IN   
+    ( subquery | expression [ ,...n ]  
+    )   
+
+-- Arguments
+-- 'test_expression'
+-- Is any valid expression.
+-- 'subquery'
+-- Is a subquery that has a result set of one column. This column must have the same data type as test_expression.
+-- 'expression[ ,... n ]'
+-- Is a list of expressions to test for a match. All expressions must be of the same type as test_expression.
+```
+
+**Caution**
+
+Any null values returned by subquery or expression that are compared to test_expression using IN or NOT IN return UNKNOWN. Using null values in together with IN or NOT IN can produce unexpected results.
+
+Examples
+
+A. Comparing OR and IN
+
+The following example selects a list of the names of employees who are design engineers, tool designers, or marketing assistants.
+
+```sql
+-- Uses AdventureWorks  
+
+SELECT p.FirstName, p.LastName, e.JobTitle  
+FROM Person.Person AS p  
+JOIN HumanResources.Employee AS e  
+    ON p.BusinessEntityID = e.BusinessEntityID  
+WHERE e.JobTitle = 'Design Engineer'   
+   OR e.JobTitle = 'Tool Designer'   
+   OR e.JobTitle = 'Marketing Assistant';  
+GO  
+```
+
+However, you retrieve the same results by using IN.
+
+```sql
+-- Uses AdventureWorks  
+
+SELECT p.FirstName, p.LastName, e.JobTitle  
+FROM Person.Person AS p  
+JOIN HumanResources.Employee AS e  
+    ON p.BusinessEntityID = e.BusinessEntityID  
+WHERE e.JobTitle IN ('Design Engineer', 'Tool Designer', 'Marketing Assistant');  
+GO 
+```
