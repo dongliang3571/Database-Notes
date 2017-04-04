@@ -359,7 +359,7 @@ WHERE ProductModelID=7
 
 Specifies an XQuery against an instance of the xml data type. The result is of xml type. The method returns an instance of untyped XML
 
-syntax
+**Syntax**
 
 ```sql
 query ('XQuery')  
@@ -368,10 +368,12 @@ query ('XQuery')
 -- Is a string , an XQuery expression, that queries for XML nodes such as elements, attributes, in an XML instance.
 ```
 
-Example
+**Example**
 
 The following example declares a variable @myDoc of xml type and assigns an XML instance to it. The query() method is then used to specify an XQuery against the document.
+
 The query retrieves the <Features> child element of the <ProductDescription> element:
+
 ```sql
 declare @myDoc xml  
 set @myDoc = '<Root>  
@@ -385,7 +387,7 @@ set @myDoc = '<Root>
 SELECT @myDoc.query('/Root/ProductDescription/Features') 
 ```
 
-This is the result:
+**This is the result:**
 
 ```sql
 <Features>  
@@ -393,5 +395,73 @@ This is the result:
   <Maintenance>3 year parts and labor extended maintenance is available</Maintenance>  
 </Features>    
 ```
+
+- **value()**
+
+Performs an XQuery against the XML and returns a value of SQL type. This method returns a scalar value.
+You typically use this method to extract a value from an XML instance stored in an xml type column, parameter, or variable. In this way, you can specify SELECT queries that combine or compare XML data with data in non-XML columns.
+
+**Syntax**
+```sql
+value (XQuery, SQLType)  
+-- Arguments
+-- 'XQuery'
+-- Is the XQuery expression, a string literal, that retrieves data inside the XML instance. The XQuery must return at most one value. -- -- Otherwise, an error is returned.
+-- 'SQLType'
+-- Is the preferred SQL type, a string literal, to be returned. The return type of this method matches the SQLType parameter. SQLType ---- cannot be an xml data type, a common language runtime (CLR) user-defined type, image, text, ntext, or sql_variant data type. SQLType -- can be an SQL, user-defined data type.
+```
+
+**Example**
+
+A. Using the value() method against an xml type variable
+
+In the following example, an XML instance is stored in a variable of xml type. The value() method retrieves the ProductID attribute value from the XML. The value is then assigned to an int variable.
+
+```sql
+DECLARE @myDoc xml  
+DECLARE @ProdID int  
+SET @myDoc = '<Root>  
+<ProductDescription ProductID="1" ProductName="Road Bike">  
+<Features>  
+  <Warranty>1 year parts and labor</Warranty>  
+  <Maintenance>3 year parts and labor extended maintenance is available</Maintenance>  
+</Features>  
+</ProductDescription>  
+</Root>'  
+
+SET @ProdID =  @myDoc.value('(/Root/ProductDescription/@ProductID)[1]', 'int' )  
+SELECT @ProdID  
+```
+
+**This is the result:**
+
+Value 1 is returned as a result.
+
+B. Using the value() method to retrieve a value from an xml type column
+
+The following query is specified against an xml type column (CatalogDescription) in the AdventureWorks database. The query retrieves ProductModelID attribute values from each XML instance stored in the column.
+
+```sql
+SELECT CatalogDescription.value('             
+    declare namespace PD="http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/ProductModelDescription";             
+       (/PD:ProductDescription/@ProductModelID)[1]', 'int') AS Result             
+FROM Production.ProductModel             
+WHERE CatalogDescription IS NOT NULL             
+ORDER BY Result desc             
+```
+
+Note the following from the previous query:
+
+  - The namespace keyword is used to define a namespace prefix.
+  - Per static typing requirements, [1] is added at the end of the path expression in the value() method to explicitly indicate that the path expression returns a singleton.
+  
+This is the partial result:
+
+```
+35
+34
+...
+```
+Using the value() and exist() methods to retrieve values from an xml type column
 
 ## BEGIN...END (Transact-SQL)
