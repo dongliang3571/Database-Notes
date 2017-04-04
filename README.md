@@ -185,6 +185,26 @@ CREATE TRIGGER PriceTrig
 - WHERE doesn't work on aggregation like `SELECT * FROM TABLE GROUP BY ATTRUBUTE WHERE attr>2`, but it works for regular grouping like 'SELECT * FROM TABLE ORDER BY WHERE SOMETHING'
 - HAVING works for `GROUP BY`, for example `SELECT * FROM TABLE GROUP BY ATTRUBUTE HAVING attr>2`
 
+## Joins
+
+**Inner join**
+
+![alt text](https://github.com/dongliang3571/SQL-Notes/blob/master/screenshots/inner_join.png?raw=true "Inner join")
+
+**Left outter join**
+
+![alt text](https://github.com/dongliang3571/SQL-Notes/blob/master/screenshots/left_outter_join.png?raw=true "Left outter join")
+
+**Right outter join**
+
+![alt text](https://github.com/dongliang3571/SQL-Notes/blob/master/screenshots/right_outter_join.png?raw=true "Right outter join")
+
+**Full outter join**
+
+![alt text](https://github.com/dongliang3571/SQL-Notes/blob/master/screenshots/full_outter_join.png?raw=true "Full outter join")
+
+
+
 ## Microsoft SQL Server
 
 ### Delimited identifiers
