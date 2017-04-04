@@ -413,7 +413,7 @@ value (XQuery, SQLType)
 
 **Example**
 
-A. Using the value() method against an xml type variable
+**A. Using the value() method against an xml type variable**
 
 In the following example, an XML instance is stored in a variable of xml type. The value() method retrieves the ProductID attribute value from the XML. The value is then assigned to an int variable.
 
@@ -437,7 +437,7 @@ SELECT @ProdID
 
 Value 1 is returned as a result.
 
-B. Using the value() method to retrieve a value from an xml type column
+**B. Using the value() method to retrieve a value from an xml type column**
 
 The following query is specified against an xml type column (CatalogDescription) in the AdventureWorks database. The query retrieves ProductModelID attribute values from each XML instance stored in the column.
 
@@ -462,6 +462,127 @@ This is the partial result:
 34
 ...
 ```
-Using the value() and exist() methods to retrieve values from an xml type column
+
+**why need [1]**
+
+The type infers a higher cardinality than what the data actually contains. This occurs frequently, because the xml data type can contain more than one top-level element, and an XML schema collection cannot constrain this. In order to reduce the static type and guarantee that there is indeed at most one value being passed, you should use the positional predicate [1]. For example, to add 1 to the value of the attribute c of the element b under the top-level a element, you must write (/a/b/@c)[1]+1. Additionally, the DOCUMENT keyword can be used together with an XML schema collection.
+
+**Note that, basically it's index to an array, but it starts from index 1 rather than 0**
+
+```sql
+declare @x xml  
+set @x='<ManuInstructions ProductModelID="1" ProductModelName="SomeBike" >  
+<Location LocationID="L1" >  
+  <Step>Manu step 1 at Loc 1</Step>  
+  <Step>Manu step 2 at Loc 1</Step>  
+  <Step>Manu step 3 at Loc 1</Step>  
+</Location>  
+<Location LocationID="L2" >  
+  <Step>Manu step 1 at Loc 2</Step>  
+  <Step>Manu step 2 at Loc 2</Step>  
+  <Step>Manu step 3 at Loc 2</Step>  
+</Location>  
+</ManuInstructions>'  
+SELECT @x.query('  
+   for $step in /ManuInstructions/Location[1]/Step  
+   return string($step)  
+')  
+```
+
+This is the result:
+
+```sql
+Manu step 1 at Loc 1 Manu step 2 at Loc 1 Manu step 3 at Loc 1 
+```
+
+But if you have same query but with `[2]`
+
+```sql
+declare @x xml  
+set @x='<ManuInstructions ProductModelID="1" ProductModelName="SomeBike" >  
+<Location LocationID="L1" >  
+  <Step>Manu step 1 at Loc 1</Step>  
+  <Step>Manu step 2 at Loc 1</Step>  
+  <Step>Manu step 3 at Loc 1</Step>  
+</Location>  
+<Location LocationID="L2" >  
+  <Step>Manu step 1 at Loc 2</Step>  
+  <Step>Manu step 2 at Loc 2</Step>  
+  <Step>Manu step 3 at Loc 2</Step>  
+</Location>  
+</ManuInstructions>'  
+SELECT @x.query('  
+   for $step in /ManuInstructions/Location[2]/Step  -- change from Location[1] to Location[2]
+   return string($step)  
+')  
+```
+
+and result is:
+
+```
+Manu step 1 at Loc 2 Manu step 2 at Loc 2 Manu step 3 at Loc 2
+```
+
+**Summary**
+
+`Location[1]` takes `<Location LocationID="L1">`, and `Location[2]` takes `<Location LocationID="L2">`
+
+
+**C. Using the value() and exist() methods to retrieve values from an xml type column**
+
+The following example shows using both the value() method and the exist() method of the xml data type. The value() method is used to retrieve ProductModelID attribute values from the XML. The exist() method in the WHERE clause is used to filter the rows from the table.
+
+The query retrieves product model IDs from XML instances that include warranty information (the <Warranty> element) as one of the features. The condition in the WHERE clause uses the exist() method to retrieve only the rows satisfying this condition.
+
+```sql
+SELECT CatalogDescription.value('  
+     declare namespace PD="http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/ProductModelDescription";  
+           (/PD:ProductDescription/@ProductModelID)[1] ', 'int') as Result  
+FROM  Production.ProductModel  
+WHERE CatalogDescription.exist('  
+     declare namespace PD="http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/ProductModelDescription";  
+     declare namespace wm="http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/ProductModelWarrAndMain";  
+
+     /PD:ProductDescription/PD:Features/wm:Warranty ') = 1  
+```
+
+Note the following from the previous query:
+
+  - The CatalogDescription column is a typed XML column. This means that it has a schema collection associated with it. In the XQuery Prolog, the namespace declaration is used to define the prefix that is used later in the query body.
+  - If the exist() method returns a 1 (True), it indicates that the XML instance includes the <Warranty> child element as one of the features.
+  - The value() method in the SELECT clause then retrieves the ProductModelID attribute values as integers.
+  
+This is the partial result:
+
+```sql
+Result       
+-----------  
+19           
+23           
+...  
+```
+
+**D. Using the exist() method instead of the value() method**
+
+For performance reasons, instead of using the value() method in a predicate to compare with a relational value, use exist() with sql:column(). For example:
+
+```sql
+CREATE TABLE T (c1 int, c2 varchar(10), c3 xml)  
+GO  
+
+SELECT c1, c2, c3   
+FROM T  
+WHERE c3.value( '/root[1]/@a', 'integer') = c1  
+GO  
+```
+
+This can be written in the following way:
+
+```sql
+SELECT c1, c2, c3   
+FROM T  
+WHERE c3.exist( '/root[@a=sql:column("c1")]') = 1  
+GO  
+```
 
 ## BEGIN...END (Transact-SQL)
