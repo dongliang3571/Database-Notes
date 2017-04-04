@@ -353,9 +353,9 @@ SELECT Instructions.query('declare namespace AWMI="http://schemas.microsoft.com/
 FROM  Production.ProductModel  
 WHERE ProductModelID=7  
 ```
-### Xquey methods
+## Xquey methods
 
-- **query()**
+### `query()`
 
 Specifies an XQuery against an instance of the xml data type. The result is of xml type. The method returns an instance of untyped XML
 
@@ -372,7 +372,7 @@ query ('XQuery')
 
 The following example declares a variable @myDoc of xml type and assigns an XML instance to it. The query() method is then used to specify an XQuery against the document.
 
-The query retrieves the <Features> child element of the <ProductDescription> element:
+The query retrieves the `<Features>` child element of the `<ProductDescription>` element:
 
 ```sql
 declare @myDoc xml  
@@ -396,7 +396,7 @@ SELECT @myDoc.query('/Root/ProductDescription/Features')
 </Features>    
 ```
 
-- **value()**
+### `value()`
 
 Performs an XQuery against the XML and returns a value of SQL type. This method returns a scalar value.
 You typically use this method to extract a value from an XML instance stored in an xml type column, parameter, or variable. In this way, you can specify SELECT queries that combine or compare XML data with data in non-XML columns.
@@ -523,16 +523,70 @@ and result is:
 Manu step 1 at Loc 2 Manu step 2 at Loc 2 Manu step 3 at Loc 2
 ```
 
+Another example:
+
+```sql
+declare @x xml;
+declare @f bit;
+set @x='<ManuInstructions ProductModelID="1" ProductModelName="SomeBike" >  
+<Location LocationID="L1" >  
+  <Step>Manu step 1 at Loc 1</Step>  
+  <Step>Manu step 2 at Loc 1</Step>  
+  <Step>Manu step 3 at Loc 1</Step>  
+</Location>  
+<Location LocationID="L2" >  
+  <Step>Manu step 1 at Loc 2</Step>  
+  <Step>Manu step 2 at Loc 2</Step>  
+  <Step>Manu step 3 at Loc 2</Step>  
+</Location>  
+</ManuInstructions>';
+
+select @x.query('/ManuInstructions/Location/Step[1]');
+```
+
+And result is:
+
+```sql
+<Step>Manu step 1 at Loc 1</Step><Step>Manu step 1 at Loc 2</Step>
+```
+
+Another example:
+
+```sql
+declare @x xml;
+declare @f bit;
+set @x='<ManuInstructions ProductModelID="1" ProductModelName="SomeBike" >  
+<Location LocationID="L1" >  
+  <Step>Manu step 1 at Loc 1</Step>  
+  <Step>Manu step 2 at Loc 1</Step>  
+  <Step>Manu step 3 at Loc 1</Step>  
+</Location>  
+<Location LocationID="L2" >  
+  <Step>Manu step 1 at Loc 2</Step>  
+  <Step>Manu step 2 at Loc 2</Step>  
+  <Step>Manu step 3 at Loc 2</Step>  
+</Location>  
+</ManuInstructions>';
+
+select @x.query('/ManuInstructions/Location[1]/Step[1]');
+```
+
+Result is :
+
+```
+<Step>Manu step 1 at Loc 1</Step>
+```
+
 **Summary**
 
-`Location[1]` takes `<Location LocationID="L1">`, and `Location[2]` takes `<Location LocationID="L2">`
+`@x.query('/ManuInstructions/Location/Step[1]')` is iterate through all `<Location>` elements and return the first `<Step>` element in each `<Location>`, `Location[1]` takes `<Location LocationID="L1">`, and `Location[2]` takes `<Location LocationID="L2">`.
 
 
 **C. Using the value() and exist() methods to retrieve values from an xml type column**
 
 The following example shows using both the value() method and the exist() method of the xml data type. The value() method is used to retrieve ProductModelID attribute values from the XML. The exist() method in the WHERE clause is used to filter the rows from the table.
 
-The query retrieves product model IDs from XML instances that include warranty information (the <Warranty> element) as one of the features. The condition in the WHERE clause uses the exist() method to retrieve only the rows satisfying this condition.
+The query retrieves product model IDs from XML instances that include warranty information (the `<Warranty>` element) as one of the features. The condition in the WHERE clause uses the exist() method to retrieve only the rows satisfying this condition.
 
 ```sql
 SELECT CatalogDescription.value('  
@@ -549,8 +603,8 @@ WHERE CatalogDescription.exist('
 Note the following from the previous query:
 
   - The CatalogDescription column is a typed XML column. This means that it has a schema collection associated with it. In the XQuery Prolog, the namespace declaration is used to define the prefix that is used later in the query body.
-  - If the exist() method returns a 1 (True), it indicates that the XML instance includes the <Warranty> child element as one of the features.
-  - The value() method in the SELECT clause then retrieves the ProductModelID attribute values as integers.
+  - If the `exist()` method returns a 1 (True), it indicates that the XML instance includes the `<Warranty>` child element as one of the features.
+  - The `value()` method in the SELECT clause then retrieves the ProductModelID attribute values as integers.
   
 This is the partial result:
 
@@ -562,9 +616,9 @@ Result
 ...  
 ```
 
-**D. Using the exist() method instead of the value() method**
+**D. Using the `exist()` method instead of the `value()` method**
 
-For performance reasons, instead of using the value() method in a predicate to compare with a relational value, use exist() with sql:column(). For example:
+For performance reasons, instead of using the `value()` method in a predicate to compare with a relational value, use `exist()` with `sql:column()`. For example:
 
 ```sql
 CREATE TABLE T (c1 int, c2 varchar(10), c3 xml)  
@@ -584,5 +638,80 @@ FROM T
 WHERE c3.exist( '/root[@a=sql:column("c1")]') = 1  
 GO  
 ```
+
+### `exist()`
+
+Returns a bit that represents one of the following conditions:
+  - 1, representing True, if the XQuery expression in a query returns a nonempty result. That is, it returns at least one XML node.
+  - 0, representing False, if it returns an empty result.
+  - NULL if the xml data type instance against which the query was executed contains NULL.
+
+**Syntax**
+
+```
+exist (XQuery)
+
+-- Arguments
+-- 'XQuery'
+-- Is an XQuery expression, a string literal.
+```
+
+**Examples**
+
+In the following example, @x is an xml type variable (untyped xml) and @f is an integer type variable that stores the value returned by the exist() method. The exist() method returns True (1) if the date value stored in the XML instance is 2002-01-01.
+
+```sql
+declare @x xml;  
+declare @f bit;  
+set @x = '<root Somedate = "2002-01-01Z"/>';  
+set @f = @x.exist('/root[(@Somedate cast as xs:date?) eq xs:date("2002-01-01Z")]');  
+select @f;  
+```
+
+In comparing dates in the exist() method, note the following:
+
+  - The code `cast as xs:date?` is used to cast the value to xs:date type for purposes of comparison.
+  - The value of the @Somedate attribute is untyped. In comparing this value, it is implicitly cast to the type on the right side of the comparison, the xs:date type.
+  - Instead of cast as xs:date(), you can use the xs:date() constructor function.
+  
+**Anothen examlpe**
+
+```sql
+declare @x xml;
+declare @f bit;
+set @x='<ManuInstructions ProductModelID="1" ProductModelName="SomeBike" >  
+<Location LocationID="L1" >  
+  <Step>Manu step 1 at Loc 1</Step>  
+  <Step>Manu step 2 at Loc 1</Step>  
+  <Step>Manu step 3 at Loc 1</Step>  
+</Location>  
+<Location LocationID="L2" >  
+  <Step>Manu step 1 at Loc 2</Step>  
+  <Step>Manu step 2 at Loc 2</Step>  
+  <Step>Manu step 3 at Loc 2</Step>  
+</Location>  
+</ManuInstructions>';
+
+set @f = @x.exist('/ManuInstructions/Location[@LocationID="L3"]');
+select @f;
+```
+
+This will return 0, because there is no `<Location>` with attribute `LocationID` equal to "L3"
+
+The following example is similar to the previous one, except it has a `<Somedate>` element.
+
+```sql
+DECLARE @x xml;  
+DECLARE @f bit;  
+SET @x = '<Somedate>2002-01-01Z</Somedate>';  
+SET @f = @x.exist('/Somedate[(text()[1] cast as xs:date ?) = xs:date("2002-01-01Z") ]')  
+SELECT @f;  
+```
+
+Note the following from the previous query:
+
+  - The `text()` method returns a text node that contains the untyped value `2002-01-01`. (The XQuery type is xdt:untypedAtomic.) You must explicitly cast this typed value from x to xsd:date, because implicit casting is not supported in this case.
+
+
 
 ## BEGIN...END (Transact-SQL)
