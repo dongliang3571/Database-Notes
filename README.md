@@ -1,5 +1,16 @@
 # SQL-Notes
 
+- SQL is a query language to operate on sets.
+
+It is more or less standardized, and used by almost all relational database management systems: SQL Server, Oracle, MySQL, PostgreSQL, DB2, Informix, etc.
+
+- PL/SQL is a proprietary procedural language used by Oracle
+- PL/pgSQL is a procedural language used by PostgreSQL
+- TSQL is a proprietary procedural language used by Microsoft in SQL Server.
+
+Procedural languages are designed to extend SQL's abilities while being able to integrate well with SQL. Several features such as local variables and string/data processing are added. These features make the language Turing-complete.
+
+
 ### Difference between `VARCHAR` and `CHAR`
   - `VARCHAR` is variable-length.
   - `CHAR` is fixed length.
@@ -951,3 +962,11 @@ JOIN HumanResources.Employee AS e
 WHERE e.JobTitle IN ('Design Engineer', 'Tool Designer', 'Marketing Assistant');  
 GO 
 ```
+
+### Prefix `N` in Transact-SQL statment
+
+It's declaring the string as nvarchar data type, rather than varchar
+
+You may have seen Transact-SQL code that passes strings around using an N prefix. This denotes that the subsequent string is in Unicode (the N actually stands for National language character set). Which means that you are passing an NCHAR, NVARCHAR or NTEXT value, as opposed to CHAR, VARCHAR or TEXT.
+
+Prefix Unicode character string constants with the letter N. Without the N prefix, the string is converted to the default code page of the database. This default code page may not recognize certain characters.
