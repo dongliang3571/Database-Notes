@@ -269,3 +269,36 @@ schema : database : table <-> floor plan : house : room
 
 ### What is dbo
 dbo is the default schema in SQL Server. You can create your own schemas to allow you to better manage your object namespace.
+
+### What is XQuery?
+
+- XQuery is to XML what SQL is to databases.
+- XQuery is designed to query XML data.
+
+```xml
+for $x in doc("books.xml")/bookstore/book
+where $x/price>30
+order by $x/title
+return $x/title
+```
+### XQuery (SQL Server)
+
+Transact-SQL supports **a subset of the XQuery language** that is used for querying the xml data type. XQuery is a language that can query structured or semi-structured XML data. With the xml data type support provided in the Database Engine, documents can be stored in a database and then queried by using XQuery.
+
+### XPath
+XPath (XML Path Language) is a query language for selecting nodes from an XML document, which is **subset of XQuery**
+
+### XQuery abd XPath
+
+XQuery is based on the existing XPath query language, with support added for better iteration, better sorting results, and the ability to construct the necessary XML. XQuery operates on the XQuery Data Model. This is an abstraction of XML documents, and the XQuery results that can be typed or untyped. The type information is based on the types provided by the W3C XML Schema language. If no typing information is available, XQuery handles the data as untyped. This is similar to how XPath version 1.0 handles XML.
+
+To query an XML instance stored in a variable or column of xml type, you use the xml Data Type Methods. For example, you can declare a variable of xml type and query it by using the query() method of the xml data type.
+
+```sql
+DECLARE @x xml  -- declare variable @x with data type xml
+SET @x = '<ROOT><a>111</a></ROOT>'  -- set @x to xml some data
+SELECT @x.query('/ROOT/a') -- using query() method to retrive node <a> which is the direct child of <ROOT>
+-- output will be <a>111</a>
+```
+
+## BEGIN...END (Transact-SQL)
