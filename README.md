@@ -712,6 +712,129 @@ Note the following from the previous query:
 
   - The `text()` method returns a text node that contains the untyped value `2002-01-01`. (The XQuery type is xdt:untypedAtomic.) You must explicitly cast this typed value from x to xsd:date, because implicit casting is not supported in this case.
 
+**Example: Specifying the exist() method against a typed xml variable**
+
+The following example illustrates the use of the exist() method against an xml type variable. It is a typed XML variable, because it specifies the schema namespace collection name, ManuInstructionsSchemaCollection.
+
+In the example, a manufacturing instructions document is first assigned to this variable and then the exist() method is used to find whether the document includes a `<Location>` element whose LocationID attribute value is 50.
+
+The exist() method specified against the @x variable returns 1 (True) if the manufacturing instructions document includes a `<Location>` element that has LocationID=50. Otherwise, the method returns 0 (False).
+
+```sql
+DECLARE @x xml (Production.ManuInstructionsSchemaCollection);  
+SELECT @x=Instructions  
+FROM Production.ProductModel  
+WHERE ProductModelID=67;  
+--SELECT @x  
+DECLARE @f int;  
+SET @f = @x.exist(' declare namespace AWMI="http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/ProductModelManuInstructions";  
+    /AWMI:root/AWMI:Location[@LocationID=50]  
+');  
+SELECT @f;  
+```
+
+**Example: Specifying the exist() method against an xml type column**
+
+The following query retrieves product model IDs whose catalog descriptions do not include the specifications, `<Specifications>` element:
+
+```sql
+SELECT ProductModelID, CatalogDescription.query('  
+declare namespace pd="http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/ProductModelDescription";  
+    <Product   
+        ProductModelID= "{ sql:column("ProductModelID") }"   
+        />  
+') AS Result  
+FROM Production.ProductModel  
+WHERE CatalogDescription.exist('  
+    declare namespace  pd="http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/ProductModelDescription";  
+     /pd:ProductDescription[not(pd:Specifications)]'  
+    ) = 1;  
+```
+
+### `nodes()`
+
+The `nodes()` method is useful when you want to shred an xml data type instance into relational data. It allows you to identify nodes that will be mapped into a new row.
+
+Every xml data type instance has an implicitly provided context node. For the XML instance stored in a column or variable, this is the document node. The document node is the implicit node at the top of every xml data type instance.
+
+The result of the nodes() method is a rowset that contains logical copies of the original XML instances. In these logical copies, the context node of every row instance is set to one of the nodes identified with the query expression, so that subsequent queries can navigate relative to these context nodes.
+
+You can retrieve multiple values from the rowset. For example, you can apply the value() method to the rowset returned by nodes() and retrieve multiple values from the original XML instance. Note that the value() method, when applied to the XML instance, returns only one value.
+
+**Syntax**
+
+```sql
+nodes (XQuery) as Table(Column)  
+
+-- Arguments
+-- 'XQuery'
+-- Is a string literal, an XQuery expression. If the query expression constructs nodes, these constructed nodes are exposed in the resulting rowset. If the query expression results in an empty sequence, the rowset will be empty. If the query expression statically results in a sequence that contains atomic values instead of nodes, a static error is raised.
+-- 'Table(Column)'
+-- Is the table name and the column name for the resulting rowset.
+```
+
+As an example, assume that you have the following table:
+
+```sql
+T (ProductModelID int, Instructions xml)  
+```
+
+The following manufacturing instructions document is stored in the table. Only a fragment is shown. Note that there are three manufacturing locations in the document.
+
+```sql
+<root>  
+  <Location LocationID="10"...>  
+     <step>...</step>  
+     <step>...</step>  
+      ...  
+  </Location>  
+  <Location LocationID="20" ...>  
+       ...  
+  </Location>  
+  <Location LocationID="30" ...>  
+       ...  
+  </Location>  
+</root>  
+```
+
+A `nodes()` method invocation with the query expression /root/Location would return a rowset with three rows, each containing a logical copy of the original XML document, and with the context item set to one of the `<Location>` nodes:
+
+```sql
+Product  
+ModelID      Instructions  
+----------------------------------  
+1       <root>  
+             <Location LocationID="20" ... />  
+             <Location LocationID="30" .../></root>  
+1      <root><Location LocationID="10" ... />  
+
+             <Location LocationID="30" .../></root>  
+1      <root><Location LocationID="10" ... />  
+             <Location LocationID="20" ... />  
+             </root>  
+```
+
+You can then query this rowset by using xml data type methods. The following query extracts the subtree of the context item for each generated row:
+
+```sql
+SELECT T2.Loc.query('.')  
+FROM   T  
+CROSS APPLY Instructions.nodes('/root/Location') as T2(Loc)   
+```
+
+This is the result:
+
+```sql
+ProductModelID  Instructions  
+----------------------------------  
+1        <Location LocationID="10" ... />  
+1        <Location LocationID="20" ... />  
+1        <Location LocationID="30" .../>  
+```
+
+Note that the rowset returned has maintained the type information. You can apply xml data type methods, such as query(), value(), exist(), and nodes(), to the result of a nodes() method. However, you cannot apply the modify() method to modify the XML instance.
+
+Also, the context node in the rowset cannot be materialized. That is, you cannot use it in a SELECT statement. However, you can use it in IS NULL and COUNT(*).
 
 
 ## BEGIN...END (Transact-SQL)
