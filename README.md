@@ -856,5 +856,40 @@ Note that the rowset returned has maintained the type information. You can apply
 
 Also, the context node in the rowset cannot be materialized. That is, you cannot use it in a SELECT statement. However, you can use it in IS NULL and COUNT(*).
 
+### `CROSS APPLY`
+
+To use JOINs (with whatever syntax), both sets you are joining must be **self-sufficient**, i. e. the sets should not depend on each other. You can query both sets without ever knowing the contents on another set.
+
+But for some tasks the sets are not self-sufficient. For instance, let's consider the following query:
+
+```
+We have table1 and table2. table1 has a column called rowcount.
+
+For each row from table1 we need to select first rowcount rows from table2, ordered by table2.id
+```
+
+We cannot come up with a join condition here. The join condition, should it exist, would involve the row number, which is not present in table2, and there is no way to calculate a row number only from the values of columns of any given row in table2.
+
+That's where the CROSS APPLY can be used.
+
+CROSS APPLY is a Microsoft's extension to SQL, which was originally intended to be used with table-valued functions (TVF's).
+
+The query above would look like this:
+
+```sql
+SELECT  *
+FROM    table1
+CROSS APPLY
+(
+SELECT  TOP (table1.rowcount) *
+FROM    table2
+ORDER BY
+id
+) t2
+```
+
+```
+For each from table1, select first table1.rowcount rows from table2 ordered by id
+```
 
 ## BEGIN...END (Transact-SQL)
