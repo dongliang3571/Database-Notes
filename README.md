@@ -281,6 +281,49 @@ where $x/price>30
 order by $x/title
 return $x/title
 ```
+
+an example of books.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<bookstore>
+
+<book category="COOKING">
+  <title lang="en">Everyday Italian</title>
+  <author>Giada De Laurentiis</author>
+  <year>2005</year>
+  <price>30.00</price>
+</book>
+
+<book category="CHILDREN">
+  <title lang="en">Harry Potter</title>
+  <author>J K. Rowling</author>
+  <year>2005</year>
+  <price>29.99</price>
+</book>
+
+<book category="WEB">
+  <title lang="en">XQuery Kick Start</title>
+  <author>James McGovern</author>
+  <author>Per Bothner</author>
+  <author>Kurt Cagle</author>
+  <author>James Linn</author>
+  <author>Vaidyanathan Nagarajan</author>
+  <year>2003</year>
+  <price>49.99</price>
+</book>
+
+<book category="WEB">
+  <title lang="en">Learning XML</title>
+  <author>Erik T. Ray</author>
+  <year>2003</year>
+  <price>39.95</price>
+</book>
+
+</bookstore>
+```
+
 ### XQuery (SQL Server)
 
 Transact-SQL supports **a subset of the XQuery language** that is used for querying the xml data type. XQuery is a language that can query structured or semi-structured XML data. With the xml data type support provided in the Database Engine, documents can be stored in a database and then queried by using XQuery.
@@ -299,6 +342,56 @@ DECLARE @x xml  -- declare variable @x with data type xml
 SET @x = '<ROOT><a>111</a></ROOT>'  -- set @x to xml some data
 SELECT @x.query('/ROOT/a') -- using query() method to retrive node <a> which is the direct child of <ROOT>
 -- output will be <a>111</a>
+```
+
+In the following example, the query is specified against the Instructions column of xml type in ProductModel table in the AdventureWorks database.
+
+```sql
+SELECT Instructions.query('declare namespace AWMI="http://schemas.microsoft.com/sqlserver/2004/07/adventure-works/ProductModelManuInstructions";           
+    /AWMI:root/AWMI:Location[@LocationID=10]  
+') as Result   
+FROM  Production.ProductModel  
+WHERE ProductModelID=7  
+```
+### Xquey methods
+
+- **query()**
+
+Specifies an XQuery against an instance of the xml data type. The result is of xml type. The method returns an instance of untyped XML
+
+syntax
+
+```sql
+query ('XQuery')  
+
+-- Arguments 'XQuery'
+-- Is a string , an XQuery expression, that queries for XML nodes such as elements, attributes, in an XML instance.
+```
+
+Example
+
+The following example declares a variable @myDoc of xml type and assigns an XML instance to it. The query() method is then used to specify an XQuery against the document.
+The query retrieves the <Features> child element of the <ProductDescription> element:
+```sql
+declare @myDoc xml  
+set @myDoc = '<Root>  
+<ProductDescription ProductID="1" ProductName="Road Bike">  
+<Features>  
+  <Warranty>1 year parts and labor</Warranty>  
+  <Maintenance>3 year parts and labor extended maintenance is available</Maintenance>  
+</Features>  
+</ProductDescription>  
+</Root>'  
+SELECT @myDoc.query('/Root/ProductDescription/Features') 
+```
+
+This is the result:
+
+```sql
+<Features>  
+  <Warranty>1 year parts and labor</Warranty>  
+  <Maintenance>3 year parts and labor extended maintenance is available</Maintenance>  
+</Features>    
 ```
 
 ## BEGIN...END (Transact-SQL)
