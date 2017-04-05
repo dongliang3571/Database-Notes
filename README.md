@@ -903,6 +903,158 @@ id
 For each from table1, select first table1.rowcount rows from table2 ordered by id
 ```
 
+### Xquery expression
+
+**Primary Expressions**
+
+**Variable References**
+
+A variable reference in XQuery is a QName preceded by a $ sign. This implementation supports only unprefixed variable references. For example, the following query defines the variable $i in the FLWOR expression.
+
+```sql
+DECLARE @var XML  
+SET @var = '<root>1</root>'  
+SELECT @var.query('  
+ for $i in /root return data($i)')  
+GO  
+```
+
+return 1
+
+The following query will not work because a namespace prefix is added to the variable name.
+
+```sql
+DECLARE @var XML  
+SET @var = '<root>1</root>'  
+SELECT @var.query('  
+DECLARE namespace x="http://X";  
+for $x:i in /root return data($x:i)')  
+GO  
+```
+
+You can use the sql:variable() extension function to refer to SQL variables, as shown in the following query.
+
+```sql
+DECLARE @price money  
+SET @price=2500  
+DECLARE @x xml  
+SET @x = ''  
+SELECT @x.query('<value>{sql:variable("@price") }</value>') 
+```
+
+This is the result.
+
+<value>2500</value>
+
+
+**Sequence Expressions**
+
+**Filtering Sequences**
+
+You can filter the sequence returned by an expression by adding a predicate to the expression. For more information, see Path Expressions (XQuery). For example, the following query returns a sequence of three `<a>` element nodes:
+
+```sql
+declare @x xml  
+set @x = '<root>  
+<a attrA="1">111</a>  
+<a></a>  
+<a></a>  
+</root>'  
+SELECT @x.query('/root/a')  
+```
+
+This is the result:
+
+```sql
+<a attrA="1">111</a>  
+<a />  
+<a />  
+```
+
+To retrieve only `<a>` elements that have the attribute attrA, you can specify a filter in the predicate. The resulting sequence will have only one `<a>` element.
+
+
+```sql
+declare @x xml  
+set @x = '<root>  
+<a attrA="1">111</a>  
+<a></a>  
+<a></a>  
+</root>'  
+SELECT @x.query('/root/a[@attrA]')
+```
+
+This is the result:
+
+```sql
+<a attrA="1">111</a> 
+```
+
+For more information about how to specify predicates in a path expression, see Specifying Predicates in a Path Expression Step[https://docs.microsoft.com/en-us/sql/xquery/path-expressions-specifying-predicates].
+
+The following example builds a sequence expression of subtrees and then applies a filter to the sequence.
+
+```sql
+declare @x xml  
+set @x = '  
+<a>  
+  <c>C under a</c>  
+</a>  
+<b>    
+   <c>C under b</c>  
+</b>  
+<c>top level c</c>  
+<d></d>  
+'  
+```
+
+The expression in (/a, /b) constructs a sequence with subtrees /a and /b and from the resulting sequence the expression filters element `<c>`.
+
+```sql
+SELECT @x.query('  
+  (/a, /b)/c  
+')  
+```
+
+This is the result:
+
+```sql
+<c>C under a</c>  
+<c>C under b</c> 
+```
+
+The following example applies a predicate filter. The expression finds elements `<a>` and `<b>` that contain element `<c>`.
+
+```sql
+declare @x xml  
+set @x = '  
+<a>  
+  <c>C under a</c>  
+</a>  
+<b>    
+   <c>C under b</c>  
+</b>  
+
+<c>top level c</c>  
+<d></d>  
+'  
+SELECT @x.query('  
+  (/a, /b)[c]  
+')  
+```
+
+This is the result:
+
+```sql
+<a>  
+  <c>C under a</c>  
+</a>  
+<b>  
+  <c>C under b</c>  
+</b>  
+```
+
+
 ## BEGIN...END (Transact-SQL)
 
 ## IN (Transact-SQL)
