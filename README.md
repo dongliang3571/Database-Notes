@@ -1131,3 +1131,21 @@ It's declaring the string as nvarchar data type, rather than varchar
 You may have seen Transact-SQL code that passes strings around using an N prefix. This denotes that the subsequent string is in Unicode (the N actually stands for National language character set). Which means that you are passing an NCHAR, NVARCHAR or NTEXT value, as opposed to CHAR, VARCHAR or TEXT.
 
 Prefix Unicode character string constants with the letter N. Without the N prefix, the string is converted to the default code page of the database. This default code page may not recognize certain characters.
+
+### Keyword `GO` and `BEGIN...END`
+
+GO is like the end of a script.
+
+You could have multiple CREATE TABLE statements, separated by GO. It's a way of isolating one part of the script from another, but submitting it all in one block.
+
+BEGIN and END are just like { and } in C/++/#, Java, etc.
+
+They bound a logical block of code. I tend to use BEGIN and END at the start and end of a stored procedure, but it's not strictly necessary there. Where it IS necessary is for loops, and IF statements, etc, where you need more then one step...
+
+```sql
+IF EXISTS (SELECT * FROM my_table WHERE id = @id)
+BEGIN
+   INSERT INTO Log SELECT @id, 'deleted'
+   DELETE my_table WHERE id = @id
+END
+```
