@@ -196,6 +196,15 @@ CREATE TRIGGER PriceTrig
 - WHERE doesn't work on aggregation like `SELECT * FROM TABLE GROUP BY ATTRUBUTE WHERE attr>2`, but it works for regular grouping like 'SELECT * FROM TABLE ORDER BY WHERE SOMETHING'
 - HAVING works for `GROUP BY`, for example `SELECT * FROM TABLE GROUP BY ATTRUBUTE HAVING attr>2`
 
+### Copy data from one table into a new table(the new table must not exist already)
+
+```sql
+SELECT *
+INTO newtable [IN externaldb]
+FROM oldtable
+WHERE condition;
+```
+
 ## Joins
 
 **Inner join**
