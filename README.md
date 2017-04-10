@@ -188,6 +188,12 @@ CREATE TRIGGER PriceTrig
   FOR EACH ROW
 ```
 
+**Row Level trigger** and **Statement Level Trigger**
+
+- a row level trigger will fire for each and every row that is affected by the DML statement (note this is also true for INSERT statements that are based on a SELECT or are using a multi-row syntax to insert more than one row at a time)
+- a statement level trigger will fire once for the whole statement.
+
+Oracle, PostgreSQL and DB2 support both, row level and statement level triggers. **Microsoft SQL Server** only supports statement level triggers and MySQL only supports row level triggers.
 
 ### GROUP BY and ORDER BY, WHERE and HAVING
 - ORDER BY alters the order in which items are returned.
