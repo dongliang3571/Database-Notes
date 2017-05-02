@@ -1,4 +1,4 @@
-# SQL-Notes
+# SQL-Database-Notes
 
 - SQL is a query language to operate on sets.
 
