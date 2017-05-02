@@ -1,6 +1,6 @@
 # Database-Notes
 
-## The SQL vs NoSQL Holy War
+## The SQL vs NoSQL(specifically, Document-Oriented database, not including redis, apache cassandra) Holy War
 
 Before we go further, let’s dispel a number of myths …
 
@@ -224,6 +224,32 @@ SQL and NoSQL databases do the same thing in different ways. It’s possible cho
 - speed and scalability is imperative.
 
 In the case of our book store, an SQL database appears the most practical option — especially when we introduce ecommerce facilities requiring robust transaction support. In the next article, we’ll discuss further project scenarios, and determine whether an SQL or NoSQL database would be the best solution.
+
+## Different NoSql database
+
+- **Key/Value**: Redis, Tokyo Cabinet, Memcached
+- **ColumnFamily**: Cassandra, HBase
+- **Document**: MongoDB, CouchDB
+
+The main differences are the data model and the querying capabilities.
+
+**Key-value stores**
+
+The first type is very simple and probably doesn't need any further explanation.
+
+**Data model: more than key-value stores**
+
+Although there is some debate on the correct name for databases such as Cassandra, I'd like to call them **column-family stores**. Although key-value pairs are an essential part of Cassandra, it's not limited to just that. It allows you to nest key-value pairs, so a key could refer to multiple sub-key-value pairs.
+
+You cannot nest key-value pairs indefinitely though. Your limited to three levels (column families) or four levels of nesting (super-column families). In case the term column family doesn't ring a bell, see the WTF is a SuperColumn article, it's a good explanation of Cassandra's data model.
+
+**Document databases**, such as CouchDB and MongoDB store entire documents in the form of JSON objects. You can think of these objects as nested key-value pairs. Unlike Cassandra, you can nest key-value pairs as much as you want. JSON also supports arrays and understands different data types, such as strings, numbers and boolean values.
+
+**Querying**
+
+I believe column-family stores can only be queried by key, or by writing map-reduce functions. You cannot query the values like you would in an SQL database. If your application needs more complex queries, your application will have to create and maintain indexes in order to access the desired data.
+
+Document databases support queries by key and map-reduce functions as well, but also allow you to do basic queries by value, such as "Give me all users with more than 10 posts". Document databases are more flexible in this way.
 
 ## Different SQL languages
 
