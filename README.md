@@ -10,6 +10,10 @@ It is more or less standardized, and used by almost all relational database mana
 
 Procedural languages are designed to extend SQL's abilities while being able to integrate well with SQL. Several features such as local variables and string/data processing are added. These features make the language Turing-complete.
 
+### ACID
+
+Let's first discuss what ACID means. ACID is an acronym **(Atomicity, Consistency, Isolation, Durability)** that defines a set of properties that will guarantee reliability in the world of database transactions. **Atomicity** means that if you have multiple statements in a transaction, all parts of the transaction need to be successful - if any one of them fails, the whole transaction will also fail. **Consistency** means that there is a guarantee that the database will go from one valid state into another when a transaction commits. **Isolation** means that if you execute your transactions concurrently, those transactions are unaware of each other and that they are executed serially. Finally, **durability** means that if a transaction commits (i.e. saves data to the database, does an update or deletes something) those changes are going to persist, even in the case of a system failure. - See more at: https://developer.marklogic.com/blog/how-is-marklogic-different-from-mongodb#sthash.aiILcZAE.dpuf
+
 
 ### Difference between `VARCHAR` and `CHAR`
   - `VARCHAR` is variable-length.
