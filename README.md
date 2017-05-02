@@ -1,4 +1,4 @@
-# SQL-Database-Notes
+# Database-Notes
 
 ## The SQL vs NoSQL Holy War
 
@@ -185,6 +185,45 @@ SQL is a lightweight declarative language. It’s deceptively powerful, and has 
 NoSQL databases use JavaScripty-looking queries with JSON-like arguments! Basic operations are simple, but nested JSON can become increasingly convoluted for more complex queries.
 
 A quick comparison:
+
+![crud1](https://github.com/dongliang3571/Database-Notes/blob/master/screenshots/crud-1.png?raw=true)
+![crud2](https://github.com/dongliang3571/Database-Notes/blob/master/screenshots/crud-2.png?raw=true)
+
+### SQL vs NoSQL Performance
+
+Perhaps the most controversial comparison, NoSQL is regularly quoted as being faster than SQL. This isn’t surprising; NoSQL’s simpler denormalized store allows you to retrieve all information about a specific item in a single request. There’s no need for related JOINs or complex SQL queries.
+
+That said, your project design and data requirements will have most impact. A well-designed SQL database will almost certainly perform better than a badly designed NoSQL equivalent and vice versa.
+
+### SQL vs NoSQL Scaling
+
+As your data grows, you may find it necessary to distribute the load among multiple servers. This can be tricky for SQL-based systems. How do you allocate related data? Clustering is possibly the simplest option; multiple servers access the same central store — but even this has challenges.
+
+NoSQL’s simpler data models can make the process easier, and many have been built with scaling functionality from the start. That is a generalization, so seek expert advice if you encounter this situation.
+
+### SQL vs NoSQL Practicalities
+
+Finally, let’s consider security and system problems. The most popular NoSQL databases have been around a few years; they are more likely to exhibit issues than more mature SQL products. Many problems have been reported, but most boil down to a single issue: knowledge.
+
+Developers and sysadmins have less experience with newer database systems, so mistakes are made. Opting for NoSQL because it feels fresher, or because you want to avoid schema design inevitably, leads to problems later.
+
+### SQL vs NoSQL Summary
+
+SQL and NoSQL databases do the same thing in different ways. It’s possible choose one option and switch to another later, but a little planning can save time and money.
+
+**Projects where SQL is ideal:**
+
+- logical related discrete data requirements which can be identified up-front
+- data integrity is essential
+- standards-based proven technology with good developer experience and support.
+
+**Projects where NoSQL is ideal:**
+
+- unrelated, indeterminate or evolving data requirements
+- simpler or looser project objectives, able to start coding immediately
+- speed and scalability is imperative.
+
+In the case of our book store, an SQL database appears the most practical option — especially when we introduce ecommerce facilities requiring robust transaction support. In the next article, we’ll discuss further project scenarios, and determine whether an SQL or NoSQL database would be the best solution.
 
 ## Different SQL languages
 
