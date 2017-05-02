@@ -187,7 +187,7 @@ NoSQL databases use JavaScripty-looking queries with JSON-like arguments! Basic 
 A quick comparison:
 
 ![crud1](https://github.com/dongliang3571/Database-Notes/blob/master/screenshots/crud-1.png?raw=true)
-![crud2](https://github.com/dongliang3571/Database-Notes/blob/master/screenshots/crud-2.png?raw=true)
+![crud2](https://github.com/dongliang3571/Database-Notes/blob/master/screenshots/curd-2.png?raw=true)
 
 ### SQL vs NoSQL Performance
 
