@@ -324,6 +324,16 @@ will give you output of:
 
 schema : database : table <-> floor plan : house : room
 
+### Schema(namespace, it's different from table schema)
+
+You cannot have two objects with the same name in a namespace.
+
+In Orace, schema equals to user, and schema is a namespace. You cannot have two objects of the same name in a schema. Triggers, views, tables, indexes - are examples of objects. They all have names which must be unique in the namespace (schema). Column is not an object, so you can have multiple columns with the same name as long as they belong to different tables/views.
+
+In SQL Srever 2005 an up, schema (within a database) is also a namespace, as in Oracle. Schema is a group (a set) of db objects within a database. No two objects (indexes, triggers, tables) can have the same name in a single schema.
+
+In SQL Server 2000 and below, there is no schema. Instead of schema, there is owner of the object (user that owns the object). So, below a user of a database there cannot be two objects with the same name. In version 2005, SQL Server introduced the schema to separate a user (owner) from the group of objects (schema). E.g. You can drop a user, but schema and all objects within it will stay untouched. It's because you didn' drop the schema (group of objects), you just dropped the user (that has some rights on the objects). 
+
 ### What is dbo
 dbo is the default schema in SQL Server. You can create your own schemas to allow you to better manage your object namespace.
 
