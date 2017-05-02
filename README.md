@@ -1,5 +1,193 @@
 # SQL-Database-Notes
 
+## The SQL vs NoSQL Holy War
+
+Before we go further, let’s dispel a number of myths …
+
+**MYTH: NoSQL supersedes SQL**
+
+That would be like saying boats were superseded by cars because they’re a newer technology. SQL and NoSQL do the same thing: store data. They take different approaches, which may help or hinder your project. Despite feeling newer and grabbing recent headlines, NoSQL is not a replacement for SQL — it’s an alternative.
+
+**MYTH: NoSQL is better / worse than SQL**
+
+Some projects are better suited to using an SQL database. Some are better suited to NoSQL. Some could use either interchangeably. This article could never be a SitePoint Smackdown, because you cannot apply the same blanket assumptions everywhere.
+
+**MYTH: SQL vs NoSQL is a clear distinction**
+
+This is not necessarily true. Some SQL databases are adopting NoSQL features and vice versa. The choices are likely to become increasingly blurred, and NewSQL hybrid databases could provide some interesting options in the future.
+
+### SQL Tables vs NoSQL Documents
+
+SQL databases provide a store of related data tables. For example, if you run an online book store, book information can be added to a table named book:
+
+| ISBN | title | author | format | price |
+|------|-------|--------|--------|-------|
+| 9780992461225 | JavaScript: Novice to Ninja | Darren Jones | ebook | 	29.00 |
+| 9780994182654 | Jump Start Git | Shaumik Daityari | ebook | 	29.00 |
+
+Every row is a different book record. The design is rigid; you cannot use the same table to store different information or insert a string where a number is expected.
+
+NoSQL databases store JSON-like field-value pair documents, e.g.
+
+```javascript
+{
+  ISBN: 9780992461225,
+  title: "JavaScript: Novice to Ninja",
+  author: "Darren Jones",
+  format: "ebook",
+  price: 29.00
+}
+```
+
+Similar documents can be stored in a collection, which is analogous to an SQL table. However, you can store any data you like in any document; the NoSQL database won’t complain. For example:
+
+```javascript
+{
+  ISBN: 9780992461225,
+  title: "JavaScript: Novice to Ninja",
+  author: "Darren Jones",
+  year: 2014,
+  format: "ebook",
+  price: 29.00,
+  description: "Learn JavaScript from scratch!",
+  rating: "5/5",
+  review: [
+    { name: "A Reader", text: "The best JavaScript book I've ever read." },
+    { name: "JS Expert", text: "Recommended to novice and expert developers alike." }
+  ]
+}
+```
+
+SQL tables create a strict data template, so it’s difficult to make mistakes. NoSQL is more flexible and forgiving, but being able to store any data anywhere can lead to consistency issues.
+
+### SQL Schema vs NoSQL Schemaless
+
+In an SQL database, it’s impossible to add data until you define tables and field types in what’s referred to as a schema. The schema optionally contains other information, such as —
+
+- primary keys — unique identifiers such as the ISBN which apply to a single record
+- indexes — commonly queried fields indexed to aid quick searching
+- relationships — logical links between data fields
+- functionality such as triggers and stored procedures.
+
+Your data schema must be designed and implemented before any business logic can be developed to manipulate data. It’s possible to make updates later, but large changes can be complicated.
+
+In a NoSQL database, data can be added anywhere, at any time. There’s no need to specify a document design or even a collection up-front. For example, in MongoDB the following statement will create a new document in a new book collection if it’s not been previously created:
+
+```javascript
+db.book.insert(
+  ISBN: 9780994182654,
+  title: "Jump Start Git",
+  author: "Shaumik Daityari",
+  format: "ebook",
+  price: 29.00
+);
+```
+
+(MongoDB will automatically add a unique _id value to each document in a collection. You may still want to define indexes, but that can be done later if necessary.)
+
+A NoSQL database may be more suited to projects where the initial data requirements are difficult to ascertain. That said, don’t mistake difficulty for laziness: neglecting to design a good data store at project commencement will lead to problems later.
+
+### SQL Normalization vs NoSQL Denormalization
+
+Presume we want to add publisher information to our book store database. A single publisher could offer more than one title so, in an SQL database, we create a new publisher table:
+
+| id | name | country | email |
+|------|-------|--------|--------|
+| SP001 | SitePoint | Australia | feedback@sitepoint.com |
+
+We can then add a publisher_id field to our book table, which references records by publisher.id:
+
+| ISBN | title | author | format | price | publisher_id |
+|------|-------|--------|--------|-------|--------------|
+| 9780992461225 | JavaScript: Novice to Ninja | Darren Jones | ebook | 	29.00 | SP001 |
+| 9780994182654 | Jump Start Git | Shaumik Daityari | ebook | 	29.00 | SP001 |
+
+This minimizes data redundancy; we’re not repeating the publisher information for every book — only the reference to it. This technique is known as normalization, and has practical benefits. We can update a single publisher without changing book data.
+
+We can use normalization techniques in NoSQL. Documents in the book collection —
+
+```javascript
+{
+  ISBN: 9780992461225,
+  title: "JavaScript: Novice to Ninja",
+  author: "Darren Jones",
+  format: "ebook",
+  price: 29.00,
+  publisher_id: "SP001"
+}
+```
+
+reference a document in a publisher collection:
+
+```javascript
+{
+  id: "SP001"
+  name: "SitePoint",
+  country: "Australia",
+  email: "feedback@sitepoint.com"
+}
+```
+
+**However, this is not always practical**, for reasons that will become evident below. We may opt to denormalize our document and repeat publisher information for every book:
+
+```javascript
+{
+  ISBN: 9780992461225,
+  title: "JavaScript: Novice to Ninja",
+  author: "Darren Jones",
+  format: "ebook",
+  price: 29.00,
+  publisher: {
+    name: "SitePoint",
+    country: "Australia",
+    email: "feedback@sitepoint.com"
+  }
+}
+```
+
+This leads to faster queries, but updating the publisher information in multiple records will be significantly slower.
+
+### SQL Relational JOIN vs NoSQL
+
+SQL queries offer a powerful JOIN clause. We can obtain related data in multiple tables using a single SQL statement. For example:
+
+```sql
+SELECT book.title, book.author, publisher.name
+FROM book
+LEFT JOIN book.publisher_id ON publisher.id;
+```
+
+This returns all book titles, authors and associated publisher names (presuming one has been set).
+
+NoSQL has no equivalent of JOIN, and this can shock those with SQL experience. If we used normalized collections as described above, we would need to fetch all book documents, retrieve all associated publisher documents, and manually link the two in our program logic. This is one reason denormalization is often essential.
+
+### SQL vs NoSQL Data Integrity
+
+Most SQL databases allow you to enforce data integrity rules using foreign key constraints (unless you’re still using the older, defunct MyISAM storage engine in MySQL). Our book store could —
+
+ensure all books have a valid publisher_id code that matches one entry in the publisher table, and
+not permit publishers to be removed if one or more books are assigned to them.
+The schema enforces these rules for the database to follow. It’s impossible for developers or users to add, edit or remove records, which could result in invalid data or orphan records.
+
+The same data integrity options are not available in NoSQL databases; you can store what you want regardless of any other documents. Ideally, a single document will be the sole source of all information about an item.
+
+### SQL vs NoSQL Transactions (refer to [Multiversion concurrency control](#Multiversion concurrency control))
+
+In SQL databases, two or more updates can be executed in a transaction — an all-or-nothing wrapper that guarantees success or failure. For example, presume our book store contained order and stock tables. When a book is ordered, we add a record to the order table and decrement the stock count in the stock table. If we execute those two updates individually, one could succeed and the other fail — thus leaving our figures out of sync. Placing the same updates within a transaction ensures either both succeed or both fail.
+
+In a NoSQL database, modification of a single document is atomic. In other words, if you’re updating three values within a document, either all three are updated successfully or it remains unchanged. However, there’s no transaction equivalent for updates to multiple documents. There are transaction-like options, but, at the time of writing, these must be manually processed in your code.
+
+### SQL vs NoSQL CRUD Syntax
+
+Creating, reading updating and deleting data is the basis of all database systems. In essence —
+
+SQL is a lightweight declarative language. It’s deceptively powerful, and has become an international standard, although most systems implement subtly different syntaxes.
+NoSQL databases use JavaScripty-looking queries with JSON-like arguments! Basic operations are simple, but nested JSON can become increasingly convoluted for more complex queries.
+
+A quick comparison:
+
+## Different SQL languages
+
 - SQL is a query language to operate on sets.
 
 It is more or less standardized, and used by almost all relational database management systems: SQL Server, Oracle, MySQL, PostgreSQL, DB2, Informix, etc.
