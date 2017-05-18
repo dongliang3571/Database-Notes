@@ -1510,3 +1510,7 @@ Some frequent used query:
   ```
   select * from <column_family_name>;
   ```
+
+**Python client driver**
+  - pycassa(deprecated), if encounter error `AttributeError: 'TBufferedTransport' object has no attribute 'trans'`, try to enforcing dependency `thrift` to version of **0.9.3**. [link](https://pycassa.github.io/pycassa/index.html)
+  - python-driver, [link](https://datastax.github.io/python-driver/)
