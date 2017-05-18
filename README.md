@@ -1456,3 +1456,57 @@ ORDER BY
 ```
 
 Dump this into Excel, and you can slice and dice - based on the parent table, the referenced table or anything else.
+
+## Cassandra
+
+In Cassandra, **keyspaces** is corresponding to **database** in sql, **column family** us corresponding to **table** in sql. In **column family** we have **row key**, i.e unique identifier for each row, we can retrieve a row by using this **row key**. For each row, we will have multiple pair of **keys** and **values**, keys are colums, values are corresponding values for each column.
+
+- CQL clients on localhost/127.0.0.1:9042 (as shell for cassandra uses CQL service)
+- Binding thrift service to localhost/127.0.0.1:9160 (as python or any other language's interface uses thrift service)
+
+**If cassandra is installed with homebrew**, use this [link](https://gist.github.com/hkhamm/a9a2b45dd749e5d3b3ae)
+
+Assume you install cassandra with homebrew:
+
+In `/usr/local/etc/cassandra/cassandra.yaml`, make `start_rpc` `true` and restart so thrift will start working.
+
+```bash
+brew services start cassandra # start the cassandra in the background
+
+brew services stop cassandra # stop cassandra
+
+brew services restart cassandra # stop cassandra and then start it in the background
+```
+
+if you want to run cassandra in the foreground and check logs in real time, you do
+
+```bash
+cassandra -f
+```
+
+`cqlsh` is cassandra shell, you can use cql(cassandra query language) to operate cassandra just as SQL.
+
+Some frequent used query:
+
+ - show all keyspaces
+ 
+  ```sql
+  select * from system_schema.keyspaces;
+  # or
+  describe keyspaces
+  ```
+  
+ - show all column families in a keyspace
+ 
+  ```
+  select columnfamily_name from system.schema_columnfamilies where keyspace_name = <name>;
+  # or
+  describe tables
+  #or
+  describe columnfamilies
+  ```
+ 
+ - show all rows in a column families
+  ```
+  select * from <column_family_name>;
+  ```
