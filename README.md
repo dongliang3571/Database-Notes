@@ -518,8 +518,7 @@ WHERE [order] = 10   --Identifier is a reserved keyword.
 ### View a list of databases on a MS sql server
 
 ```sql
-SELECT name, database_id, create_date  
-FROM sys.databases ;  
+SELECT name, database_id, create_date FROM sys.databases;  
 GO 
 ```
 
