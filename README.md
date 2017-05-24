@@ -497,6 +497,11 @@ WHERE condition;
 
 ## Microsoft SQL Server
 
+### `master` database
+The `master` database records all the system-level information for a SQL Server system. This includes instance-wide metadata such as logon accounts, endpoints, linked servers, and system configuration settings. In SQL Server, system objects are no longer stored in the master database; instead, they are stored in the Resource database. Also, master is the database that records the existence of all other databases and the location of those database files and records the initialization information for SQL Server. Therefore, SQL Server cannot start if the master database is unavailable.
+
+**Note that you will be connected to `master` automatically once you log in to shell of the database server**
+
 ### Delimited identifiers
 
 The square brackets [] are used to delimit identifiers. This is necessary if the column name is a reserved keyword or contains special characters such as a space or hyphen.
