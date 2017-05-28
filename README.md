@@ -546,11 +546,19 @@ SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'
 
 ### View a list of columns in a database
 
+hard way:
+
 ```sql
 USE [Database Name]
 SELECT COLUMN_NAME,* 
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'YourTableName' AND TABLE_SCHEMA='YourSchemaName'
+```
+
+easy way with builtin stored procedure:
+
+```sql
+exec sp_columns @table_name='<table_name>'
 ```
 
 The `INFORMATION_SCHEMA.TABLES` view allows you to get information about all tables and views within a database. By default it will show you this information for every single table and view that is in the database.
