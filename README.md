@@ -644,6 +644,26 @@ Primary key: When you define a primary key constraint on one or more columns, SQ
 Unique: When you define a unique constraint, SQL Server automatically creates a unique, nonclustered index. You can specify that a unique clustered index be created if a clustered index does not already exist on the table.
 Covering index: A type of index that includes all the columns that are needed to process a particular query. For example, your query might retrieve the FirstName and LastName columns from a table, based on a value in the ContactID column. You can create a covering index that includes all three columns.
 
+**Special case that index wont help**
+
+One big point is that an index won't help at all for certain kinds of searches. For example:
+
+`SELECT * FROM [MyTable] WHERE [MyVarcharColumn] LIKE '%' + @SearchText + '%'`
+
+No amount of normal indexing will help that query. It's forever doomed to be slow. That LIKE expression is just not sargable.
+
+Why? You first need to understand how indexes work. They basically take the columns being indexed along with the primary key (record pointer) into a new table. They then sort that table on the indexed column rather than the key. When you do a lookup using the index, it can very quickly find the row(s) you want because this index is sorted to facilitate a more efficient search using algorithms like binary search and others.
+
+Now look at that query again. By placing a wildcard in front of the search text, you've just told the database that you don't know for sure what your column starts with. No amount of sorting will help; you still need to go through the entire table to be sure you find every record that matches the expression. And that means any normal index on the column is worthless for this query.
+
+If you want to search a text column for a search string anywhere in the column, you need to use something a little different: a full-text index.
+
+Now for contrast look at this query:
+
+`SELECT * FROM [MyTable] WHERE [MyVarcharColumn] LIKE @SearchText + '%'`
+
+This will work perfectly fine with an normal index, because you know how you expect the column to start. It can still match up with the sorted values stored in the index, and so we can say that it is sargable.
+
 ### What is XQuery?
 
 - XQuery is to XML what SQL is to databases.
