@@ -1623,4 +1623,4 @@ where
 
 **Read consistency levels**
 
-(consistency levels)[http://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlConfigConsistency.html#dmlConfigConsistency__dml-config-read-consistency]
+[consistency levels](http://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlConfigConsistency.html#dmlConfigConsistency__dml-config-read-consistency)
