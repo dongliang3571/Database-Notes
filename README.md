@@ -1596,3 +1596,31 @@ Some frequent used query:
 **Python client driver**
   - pycassa(deprecated), if encounter error `AttributeError: 'TBufferedTransport' object has no attribute 'trans'`, try to enforcing dependency `thrift` to version of **0.9.3**. [link](https://pycassa.github.io/pycassa/index.html)
   - python-driver, [link](https://datastax.github.io/python-driver/)
+ 
+### Consistency
+
+Consistency refers to how up-to-date and synchronized all replicas of a row of Cassandra data are at any given moment.
+
+Reliability of read and write operations depends on the consistency used to verify the operation. Strong consistency can be guaranteed when the following condition is true:
+
+`R + W > N`
+
+where
+
+- R is the consistency level of read operations
+- W is the consistency level of write operations
+- N is the number of replicas
+
+Eventual consistency occurs if the following condition is true:
+
+`R + W =< N`
+
+where
+
+- R is the consistency level of read operations
+- W is the consistency level of write operations
+- N is the number of replicas
+
+**Read consistency levels**
+
+(consistency levels)[http://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlConfigConsistency.html#dmlConfigConsistency__dml-config-read-consistency]
