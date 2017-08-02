@@ -1570,6 +1570,40 @@ cassandra -f
 
 In `cassandra.yaml`, find `commitlog_total_space_in_mb` and give a number
 
+### Some common error
+
+**Error 1**
+
+`java.lang.IllegalStateException: Unknown commitlog version 6`
+
+**Solution**
+
+Go to `/usr/local/var/lib/cassandra/commitlog`, delete all logs there
+
+**Error 2**
+
+`Detected unreadable sstables /usr/local/var/lib/cassandra/data/gputptest-abcdedf-5040777060fe11e5a8557fcd8340170b-KeyCache-b.db ...... please check NEWS.txt and ensure that you have upgraded through all required intermediate versions, running upgradesstables`
+
+**Solution**
+
+If the data is not important to you, go to `/usr/local/var/lib/cassandra/data/` and delete all `*.db` files.
+
+**Error 3**
+
+`Connection error: ('Unable to connect to any servers', {'127.0.0.1': error(61, "Tried connecting to [('127.0.0.1', 9042)]. Last error: Connection refused")})`
+
+**Solution**
+
+Cassandra server is not launched, just do `cassandra -f` to luanch it in foreground or `brew services start cassandra`
+
+**Error 4**
+
+`Connection error: ('Unable to connect to any servers', {'127.0.0.1': ProtocolError("cql_version '3.4.3' is not supported by remote (w/ native protocol). Supported versions: [u'3.4.2']",)})`
+
+**Solution**
+
+`cqlsh` accepts a argument `--cqlversion` to specify `cql_version`, just do `cqlsh --cqlversion='3.4.2'` will do.
+
 ### Cqlsh
 
 `cqlsh` is cassandra shell, you can use cql(cassandra query language) to operate cassandra just as SQL.
