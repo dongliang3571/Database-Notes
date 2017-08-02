@@ -1566,6 +1566,12 @@ if you want to run cassandra in the foreground and check logs in real time, you 
 cassandra -f
 ```
 
+### prevent cassandra commit log grow too much
+
+In `cassandra.yaml`, find `commitlog_total_space_in_mb` and give a number
+
+### Cqlsh
+
 `cqlsh` is cassandra shell, you can use cql(cassandra query language) to operate cassandra just as SQL.
 
 Some frequent used query:
