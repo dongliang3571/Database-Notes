@@ -1620,7 +1620,7 @@ Some frequent used query:
   
  - show all column families in a keyspace
  
-  ```
+  ```sql
   select columnfamily_name from system.schema_columnfamilies where keyspace_name = <name>;
   # or
   describe tables
@@ -1629,8 +1629,13 @@ Some frequent used query:
   ```
  
  - show all rows in a column families
-  ```
+  ```sql
   select * from <column_family_name>;
+  ```
+
+ - convert blob time to string using `blobastext`
+  ```sql
+  select blobastext(column1) from task_results ;
   ```
 
 **Python client driver**
