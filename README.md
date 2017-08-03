@@ -1633,7 +1633,7 @@ Some frequent used query:
   select * from <column_family_name>;
   ```
 
- - convert blob time to string using `blobastext`
+ - convert blob type to string using `blobastext`
   ```sql
   select blobastext(column1) from task_results ;
   ```
