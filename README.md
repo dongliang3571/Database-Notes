@@ -1636,6 +1636,8 @@ Some frequent used query:
 **Python client driver**
   - pycassa(deprecated), if encounter error `AttributeError: 'TBufferedTransport' object has no attribute 'trans'`, try to enforcing dependency `thrift` to version of **0.9.3**. [link](https://pycassa.github.io/pycassa/index.html)
   - python-driver, [link](https://datastax.github.io/python-driver/)
+  
+ **Notice:** when using pycassa with cassandra, the consistency has to match the replicas(replication factor) that you have. i.e. `READ_CONSISTENCY` and `WRITE_CONSISTENCY` and their value `ONE`, `TWO`, `QUORUM` and so on. If they're not match, `Connection 4438698256 (localhost) in pool 4438697552 failed: UnavailableException(_message=None)` will throw.
  
 ### Consistency
 
