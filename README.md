@@ -493,7 +493,46 @@ WHERE condition;
 
 ![alt text](https://github.com/dongliang3571/SQL-Notes/blob/master/screenshots/full_outter_join.png?raw=true "Full outter join")
 
+## Group by
 
+The GROUP BY statement is often used with aggregate functions (`COUNT`, `MAX`, `MIN`, `SUM`, `AVG`) to group the result-set by one or more columns.
+
+| CustomerID | CustomerName	| ContactName	| Address	City | PostalCode | Country |
+|------------|--------------|-------------|--------------|------------|---------|
+| 1 | Alfreds Futterkiste	| Maria Anders | Obere Str. 57 | Berlin	| 12209	| Germany |
+| 2 |	Ana Trujillo Emparedados y helados | Ana Trujillo | Avda. de la Constitución 2222	| México D.F.	| 05021	| Mexico |
+| 3	| Antonio Moreno Taquería	| Antonio Moreno | Mataderos 2312	| México D.F.	| 05023	| Mexico |
+| 4 | Around the Horn	| Thomas Hardy | 120 Hanover Sq.	| London | WA1 1DP |	UK |
+| 5	| Berglunds snabbköp | Christina Berglund	| Berguvsvägen 8 | Luleå | S-958 | 22	| Sweden |
+
+after run following sql
+
+```
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country;
+```
+
+You will get:
+
+| COUNT(CustomerID) | Country |
+|------------|---------|
+| 1 | Germany |
+| 2 | Mexico |
+| 1 |	UK |
+| 1	| Sweden |
+
+Note that There are two `CustomerID` with coutry being `Mexico`, that's why the `count` is `2`. What `group by` does is that it divide the table into multiple groups, and apply search on each group and return.
+
+similarly can do `SUM`
+
+```
+SELECT SUM(CustomerID), Country
+FROM Customers
+GROUP BY Country;
+```
+
+do `AVG`, `MIN`, `MAX` so forth.
 
 ## Microsoft SQL Server
 
