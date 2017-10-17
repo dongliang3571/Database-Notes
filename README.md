@@ -49,6 +49,26 @@ Locks keep anyone else from interfering with any database records you're dealing
 
 in tomorrow's lesson: The Joy of Deadlocks.
 
+**table-level & row-level Locking **
+
+https://dev.mysql.com/doc/refman/5.5/en/innodb-locking.html
+
+**Row-level locking**
+
+InnoDB implements standard row-level locking where there are two types of locks, shared (S) locks and exclusive (X) locks.
+
+A shared (S) lock permits the transaction that holds the lock to read a row.
+
+An exclusive (X) lock permits the transaction that holds the lock to update or delete a row.
+
+If transaction T1 holds a shared (S) lock on row r, then requests from some distinct transaction T2 for a lock on row r are handled as follows:
+
+A request by T2 for an S lock can be granted immediately. As a result, both T1 and T2 hold an S lock on r.
+
+A request by T2 for an X lock cannot be granted immediately.
+
+If a transaction T1 holds an exclusive (X) lock on row r, a request from some distinct transaction T2 for a lock of either type on r cannot be granted immediately. Instead, transaction T2 has to wait for transaction T1 to release its lock on row r.
+
 ### ACID properties
 
 **Atomicity**
