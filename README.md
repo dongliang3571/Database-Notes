@@ -10,6 +10,45 @@ When you submit a query to SQL Server, a number of processes on the server go to
 
 In the relational engine, the query is parsed and then processed by the query optimizer, which generates an execution plan. The plan is sent (in a binary format) to the storage engine, which then uses that plan as a basis to retrieve or modify the underlying data. The storage engine is where processes such as locking, index maintenance, and transactions occur.
 
+### Transactions & Locking tables
+
+short version:
+
+- transactions as securing things inside your code path. 
+- Locks secure things across "parallel" code paths. Until deadlocks hit..
+
+long version:
+
+Locking tables prevents other DB users from affecting the rows/tables you've locked. But locks, in and of themselves, will NOT ensure that your logic comes out in a consistent state.
+
+Think of a banking system. When you pay a bill online, there's at least two accounts affected by the transaction: Your account, from which the money is taken. And the receiver's account, into which the money is transferred. And the bank's account, into which they'll happily deposit all the service fees charged on the transaction. Given (as everyone knows these days) that banks are extraordinarily stupid, let's say their system works like this:
+
+```sql
+$balance = "GET BALANCE FROM your ACCOUNT";
+if ($balance < $amount_being_paid) {
+    charge_huge_overdraft_fees();
+}
+$balance = $balance - $amount_being paid;
+UPDATE your ACCOUNT SET BALANCE = $balance;
+
+$balance = "GET BALANCE FROM receiver ACCOUNT"
+charge_insane_transaction_fee();
+$balance = $balance + $amount_being_paid
+UPDATE receiver ACCOUNT SET BALANCE = $balance
+```
+
+Now, with no locks and no transactions, this system is vulnerable to various race conditions, the biggest of which is multiple payments being performed on your account, or the receiver's account in parallel. While your code has your balance retrieved and is doing the huge_overdraft_fees() and whatnot, it's entirely possible that some other payment will be running the same type of code in parallel. They'll be retrieve your balance (say, $100), do their transactions (take out the $20 you're paying, and the $30 they're screwing you over with), and now both code paths have two different balances: $80 and $70. Depending on which ones finishes last, you'll end up with either of those two balances in your account, instead of the $50 you should have ended up with ($100 - $20 - $30). In this case, "bank error in your favor".
+
+Now, let's say you use locks. Your bill payment ($20) hits the pipe first, so it wins and locks your account record. Now you've got exclusive use, and can deduct the $20 from the balance, and write the new balance back in peace... and your account ends up with $80 as is expected. But... uhoh... You try to go update the receiver's account, and it's locked, and locked longer than the code allows, timing out your transaction... We're dealing with stupid banks, so instead of having proper error handling, the code just pulls an exit(), and your $20 vanishes into a puff of electrons. Now you're out $20, and you still owe $20 to the receiver, and your telephone gets repossessed.
+
+So... enter transactions. You start a transaction, you debit your account $20, you try to credit the receiver with $20... and something blows up again. But this time, instead of exit(), the code can just do rollback, and poof, your $20 is magically added back to your account.
+
+In the end, it boils down to this:
+
+Locks keep anyone else from interfering with any database records you're dealing with. Transactions keep any "later" errors from interfering with "earlier" things you've done. Neither alone can guarantee that things work out ok in the end. But together, they do.
+
+in tomorrow's lesson: The Joy of Deadlocks.
+
 ### ACID properties
 
 **Atomicity**
