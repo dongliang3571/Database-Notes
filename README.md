@@ -69,6 +69,12 @@ A request by T2 for an X lock cannot be granted immediately.
 
 If a transaction T1 holds an exclusive (X) lock on row r, a request from some distinct transaction T2 for a lock of either type on r cannot be granted immediately. Instead, transaction T2 has to wait for transaction T1 to release its lock on row r.
 
+**What happens if two mySQL queries both try to lock the same row at the same time?**
+
+One transaction will simply block -- waiting to acquire the lock. The other transaction will proceed. As soon as the other transaction is done -- either by commit or rollback, the first transaction will proceed.
+
+A deadlock happens when a transaction has acquired a lock on object A, and attempts to acquire a lock on object B at the same time as another transaction has already acquired a lock on object B and is attempting to acquire a lock on object A. Both transactions will then block, waiting on each other. That's the definition of a deadlock: two transactions blocked waiting on a lock that the other has.
+
 ### ACID properties
 
 **Atomicity**
