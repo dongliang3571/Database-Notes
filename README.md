@@ -53,6 +53,8 @@ in tomorrow's lesson: The Joy of Deadlocks.
 
 https://dev.mysql.com/doc/refman/5.5/en/innodb-locking.html
 
+https://makandracards.com/makandra/31937-differences-between-transactions-and-locking
+
 **Row-level locking**
 
 InnoDB implements standard row-level locking where there are two types of locks, shared (S) locks and exclusive (X) locks.
