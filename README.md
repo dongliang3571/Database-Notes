@@ -46,6 +46,20 @@ The key concepts of Elasticsearch are as follows −
 
 - **Replicas** − Elasticsearch allows a user to create replicas of their indexes and shards. Replication not only helps in increasing the availability of data in case of failure, but also improves the performance of searching by carrying out a parallel search operation in these replicas.
 
+### Sharding
+
+https://medium.com/@jeeyoungk/how-sharding-works-b4dec46b3f6
+
+# Example of vertical partitioning
+
+```python
+fetch_user_data(user_id) -> db["USER"].fetch(user_id)
+fetch_photo(photo_id) ->    db["PHOTO"].fetch(photo_id)
+
+# Example of horizontal partitioning
+fetch_user_data(user_id) -> user_db[user_id % 2].fetch(user_id)
+```
+
 ### Difference between a Database(what we see as a DB user) & a Storage Engine & Relational engine
 
 When you submit a query to SQL Server, a number of processes on the server go to work on that query. The purpose of all these processes is to manage the system such that it will SELECT, INSERT, UPDATE or DELETE the data.These processes kick into action every time we submit a query to the system. The processes for meeting the requirements of queries break down roughly into two stages:
