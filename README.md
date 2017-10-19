@@ -1,5 +1,51 @@
 # Database-Notes
 
+## ElasticSearch
+
+In Elasticsearch, index is a collection of type just as database is a collection of tables in RDBMS (Relation Database Management System). Every table is a collection of rows just as every mapping is a collection of JSON objects Elasticsearch.
+
+| ElasticSearch | RDBMS  |
+|---------------|--------|
+|Index          |Database|
+|Shard          |Shard   |
+|Mapping        |Table   |
+|Field          |Field   |
+|JSON Object    |Tuple   |
+
+### Advantages
+
+- Elasticsearch is developed on Java, which makes it compatible on almost every platform.
+
+- Elasticsearch is real time, in other words after one second the added document is searchable in this engine.
+
+- Elasticsearch is distributed, which makes it easy to scale and integrate in any big organization.
+
+- Creating full backups are easy by using the concept of gateway, which is present in Elasticsearch.
+
+- Handling multi-tenancy is very easy in Elasticsearch when compared to Apache Solr.
+
+- Elasticsearch uses JSON objects as responses, which makes it possible to invoke the Elasticsearch server with a large number of different programming languages.
+
+- Elasticsearch supports almost every document type except those that do not support text rendering.
+
+### Key Concept
+
+The key concepts of Elasticsearch are as follows −
+
+- **Node** − It refers to a single running instance of Elasticsearch. Single physical and virtual server accommodates multiple nodes depending upon the capabilities of their physical resources like RAM, storage and processing power.
+
+- **Cluster** − It is a collection of one or more nodes. Cluster provides collective indexing and search capabilities across all the nodes for entire data.
+
+- **Index** − It is a collection of different type of documents and document properties. Index also uses the concept of shards to improve the performance. For example, a set of document contains data of a social networking application.
+
+- **Type/Mapping** − It is a collection of documents sharing a set of common fields present in the same index. For example, an Index contains data of a social networking application, and then there can be a specific type for user profile data, another type for messaging data and another for comments data.
+
+- **Document** − It is a collection of fields in a specific manner defined in JSON format. Every document belongs to a type and resides inside an index. Every document is associated with a unique identifier, called the UID.
+
+- **Shard** − Indexes are horizontally subdivided into shards. This means each shard contains all the properties of document, but contains less number of JSON objects than index. The horizontal separation makes shard an independent node, which can be store in any node. Primary shard is the original horizontal part of an index and then these primary shards are replicated into replica shards.
+
+- **Replicas** − Elasticsearch allows a user to create replicas of their indexes and shards. Replication not only helps in increasing the availability of data in case of failure, but also improves the performance of searching by carrying out a parallel search operation in these replicas.
+
 ### Difference between a Database(what we see as a DB user) & a Storage Engine & Relational engine
 
 When you submit a query to SQL Server, a number of processes on the server go to work on that query. The purpose of all these processes is to manage the system such that it will SELECT, INSERT, UPDATE or DELETE the data.These processes kick into action every time we submit a query to the system. The processes for meeting the requirements of queries break down roughly into two stages:
