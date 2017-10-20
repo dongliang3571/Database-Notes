@@ -1,5 +1,9 @@
 # Database-Notes
 
+## Database Replication
+
+https://dev.mysql.com/doc/refman/5.5/en/replication.html
+
 ## ElasticSearch
 
 ### Advantages
@@ -95,7 +99,7 @@ A type used to represent the type of document, e.g. an email, a user, or a tweet
 
 https://medium.com/@jeeyoungk/how-sharding-works-b4dec46b3f6
 
-# Example of vertical partitioning
+### Example of vertical partitioning
 
 ```python
 fetch_user_data(user_id) -> db["USER"].fetch(user_id)
