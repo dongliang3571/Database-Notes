@@ -479,12 +479,6 @@ If someone is reading from a database at the same time as someone else is writin
 
 When an MVCC database needs to update an item of data, it will not overwrite the old data with new data, but instead marks the old data as obsolete and adds the newer version elsewhere. Thus there are multiple versions stored, but only one is the latest. This allows readers to access the data that was there when they began reading, even if it was modified or deleted part way through by someone else. It also allows the database to avoid the overhead of filling in holes in memory or disk structures but requires (generally) the system to periodically sweep through and delete the old, obsolete data objects. For a document-oriented database it also allows the system to optimize documents by writing entire documents onto contiguous sections of disk—when updated, the entire document can be re-written rather than bits and pieces cut out or maintained in a linked, non-contiguous database structure.
 
-### Difference between `VARCHAR` and `CHAR`
-  - `VARCHAR` is variable-length.
-  - `CHAR` is fixed length.
-  - If your content is a fixed size, you'll get better performance with `CHAR`.
-
-
 ## MySql
 
 MySQL Server doesn't support the `SELECT ... INTO TABLE` Sybase SQL extension. Instead, MySQL Server supports the `INSERT INTO ... SELECT` standard SQL syntax, which is basically the same thing.
@@ -495,6 +489,38 @@ INSERT INTO tbl_temp2 (fld_id)
     FROM tbl_temp1 WHERE tbl_temp1.fld_order_id > 100;
 ```
 
+### Change password for a user
+
+MySQL 5.7.6 and later:
+
+```
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass';
+```
+
+MySQL 5.7.5 and earlier:
+
+```
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('MyNewPass');
+```
+
+### CREATE TABLE
+
+```sql
+CREATE TABLE tiny_to_long (
+    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    tiny_url VARCHAR(255) NOT NULL UNIQUE,
+    long_url VARCHAR(MAX) NOT NULL UNIQUE,
+) ENGINE = INNODB AUTO_INCREMENT=1;
+```
+
+`AUTO_INCREMENT` columns start from 1 by default. The automatically generated value can never be lower than 0. If you want different inital value for `AUTO_INCREMENT`, just do `AUTO_INCREMENT=other_value`
+
+`ENGINE = INNODB` is default storage engine for mysql. More options can be `ENGINE = CSV`, `ENGINE = MEMORY`
+
+### Difference between `VARCHAR` and `CHAR`
+  - `VARCHAR` is variable-length.
+  - `CHAR` is fixed length.
+  - If your content is a fixed size, you'll get better performance with `CHAR`.
 
 ### Stored program(procedures)
 
