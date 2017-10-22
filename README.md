@@ -509,8 +509,10 @@ SET PASSWORD FOR 'root'@'localhost' = PASSWORD('MyNewPass');
 CREATE TABLE tiny_to_long (
     id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     tiny_url VARCHAR(255) NOT NULL UNIQUE,
-    long_url VARCHAR(MAX) NOT NULL UNIQUE,
-) ENGINE = INNODB AUTO_INCREMENT=1;
+    long_url VARCHAR(3000) NOT NULL
+) ENGINE=INNODB AUTO_INCREMENT=1;
+
+-- When using UNIQUE constraint, size of it cannot be too large.
 ```
 
 `AUTO_INCREMENT` columns start from 1 by default. The automatically generated value can never be lower than 0. If you want different inital value for `AUTO_INCREMENT`, just do `AUTO_INCREMENT=other_value`
