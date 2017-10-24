@@ -119,6 +119,44 @@ When you submit a query to SQL Server, a number of processes on the server go to
 
 In the relational engine, the query is parsed and then processed by the query optimizer, which generates an execution plan. The plan is sent (in a binary format) to the storage engine, which then uses that plan as a basis to retrieve or modify the underlying data. The storage engine is where processes such as locking, index maintenance, and transactions occur.
 
+### Isolation
+
+| Isolation Level | Transactions | Dirty Reads | Non-Repeatable Reads | Phantom Reads |
+| ----------------|--------------|-------------|----------------------|---------------|
+| TRANSACTION_None | Not supported	| Not applicable | Not applicable | Not applicable | 
+| TRANSACTION_READ_COMMITTED | Supported | Prevented | Allowed  | Allowed |
+| TRANSACTION_READ_UNCOMMITTED | Supported | Allowed | Allowed | Allowed |
+| TRANSACTION_REPEATABLE_READ | Supported | Prevented | Prevented | Allowed |
+| TRANSACTION_SERIALIZABLE | Supported | Prevented | Prevented | Prevented |
+
+**Dirty Read**
+
+**Dirty read** occurs when one transaction is changing the record, and the other transaction can read this record before the first transaction has been committed or rolled back. This is known as a dirty read scenario because there is always the possibility that the first transaction may rollback the change, resulting in the second transaction having read an invalid data.
+
+Transaction A begins.
+
+```sql
+UPDATE EMPLOYEE SET SALARY = 10000 WHERE EMP_ID= ‘123’;
+```
+
+Transaction B begins.
+
+```sql
+SELECT * FROM EMPLOYEE;
+```
+
+(Transaction B sees data which is updated by transaction A. But, those updates have not yet been committed.)
+
+**Non-Repeatable**
+
+A non-repeatable read occurs, when during the course of a transaction, a row is retrieved twice and the values within the row differ between reads.
+
+A **non-repeatable** read occurs when transaction A retrieves a row, transaction B subsequently updates the row, and transaction A later retrieves the same row again. Transaction A retrieves the same row twice but sees different data.
+
+**Phantom Read**
+
+A **phantom read** occurs when transaction A retrieves a set of rows satisfying a given condition, transaction B subsequently inserts or updates a row such that the row now meets the condition in transaction A, and transaction A later repeats the conditional retrieval. Transaction A now sees an additional row. This row is referred to as a phantom.
+
 ### Transactions & Locking tables
 
 short version:
