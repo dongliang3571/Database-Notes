@@ -161,6 +161,7 @@ In **Mysql**, REPEATABLE READ is different from SQL Server.
 
 Example:
 
+```
 +------+----------------------------+--------------+-------+------+
 | id   | title                      | author       | price | qty  |
 +------+----------------------------+--------------+-------+------+
@@ -174,6 +175,7 @@ Example:
 | 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 | 1009 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 -------------------------------------------------------------------
+```
 
 transaction 1 with REPEATABLE READ isolation level
 
@@ -196,6 +198,7 @@ If I execute transaction 2 while transaction 1 is doing sleep 1. select 2 will p
 
 result will be:
 
+```
 +------+----------------------------+--------------+-------+------+
 | id   | title                      | author       | price | qty  |
 +------+----------------------------+--------------+-------+------+
@@ -209,6 +212,7 @@ result will be:
 | 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 | 1009 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 -------------------------------------------------------------------
+```
 
 Although **SQL Server** gives the same output however transaction 2 will be blocked until transaction 1 finishes.
 
@@ -216,6 +220,7 @@ If we do INSERT instead of DELETE in transaction, that will be phantom read. INS
 
 Note that 1009 is still there because select 1 is before delete 1 because these restriction only takes effect when first read happens. If delete happens before select 1, result will be:
 
+```
 +------+----------------------------+--------------+-------+------+
 | id   | title                      | author       | price | qty  |
 +------+----------------------------+--------------+-------+------+
@@ -228,6 +233,7 @@ Note that 1009 is still there because select 1 is before delete 1 because these 
 | 1007 | JAdsfA                     | dsdfong      | 33.33 |    3 |
 | 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 -------------------------------------------------------------------
+```
 
 **Phantom Read**
 
@@ -235,6 +241,7 @@ A **phantom read** occurs when transaction A retrieves a set of rows satisfying 
 
 same example:
 
+```
 +------+----------------------------+--------------+-------+------+
 | id   | title                      | author       | price | qty  |
 +------+----------------------------+--------------+-------+------+
@@ -248,6 +255,7 @@ same example:
 | 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 | 1009 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 -------------------------------------------------------------------
+```
 
 transaction 1 with SERIALIZABLE isolation level
 
@@ -268,6 +276,7 @@ DELETE from books WHERE id=1009; -- delete 1
 
 If I execute transaction 2 while transaction 1 is doing sleep 1. transaction 2 will wait until transaction 1 finishes and output will be:
 
+```
 +------+----------------------------+--------------+-------+------+
 | id   | title                      | author       | price | qty  |
 +------+----------------------------+--------------+-------+------+
@@ -281,6 +290,7 @@ If I execute transaction 2 while transaction 1 is doing sleep 1. transaction 2 w
 | 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 | 1009 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 -------------------------------------------------------------------
+```
 
 ### Transactions & Locking tables
 
