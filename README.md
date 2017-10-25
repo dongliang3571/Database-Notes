@@ -121,6 +121,8 @@ In the relational engine, the query is parsed and then processed by the query op
 
 ### Isolation
 
+https://www.youtube.com/watch?v=7nv-7XQI7p0
+
 | Isolation Level | Transactions | Dirty Reads | Non-Repeatable Reads | Phantom Reads |
 | ----------------|--------------|-------------|----------------------|---------------|
 | TRANSACTION_None | Not supported	| Not applicable | Not applicable | Not applicable | 
