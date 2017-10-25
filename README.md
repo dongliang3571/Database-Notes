@@ -123,6 +123,8 @@ In the relational engine, the query is parsed and then processed by the query op
 
 https://www.youtube.com/watch?v=7nv-7XQI7p0
 
+https://www.youtube.com/watch?v=ZtPj09tJjnQ
+
 | Isolation Level | Transactions | Dirty Reads | Non-Repeatable Reads | Phantom Reads |
 | ----------------|--------------|-------------|----------------------|---------------|
 | TRANSACTION_None | Not supported	| Not applicable | Not applicable | Not applicable | 
@@ -190,7 +192,7 @@ transaction 2
 DELETE from books WHERE id=1009; -- delete 1
 ```
 
-If I execute transaction 2 while transaction 1 is doing sleep 1. select 2 will produce same result as select 1, because select 2 read the snapshot established by the select 1.
+If I execute transaction 2 while transaction 1 is doing sleep 1. select 2 will produce same result as select 1, because select 2 read the snapshot established by the select 1. But transaction 2 is not blocked
 
 result will be:
 
@@ -208,21 +210,9 @@ result will be:
 | 1009 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
 -------------------------------------------------------------------
 
-But **SQL Server** will gives below with row 1009 deleted:
+Although **SQL Server** gives the same output however transaction 2 will be blocked until transaction 1 finishes.
 
-+------+----------------------------+--------------+-------+------+
-| id   | title                      | author       | price | qty  |
-+------+----------------------------+--------------+-------+------+
-| 1001 | Java for dummies           | Tan Ah Teck  | 11.11 |   11 |
-| 1002 | More Java for dummies      | Tan Ah Teck  | 22.22 |   22 |
-| 1003 | More Java for more dummies | Mohammad Ali | 33.33 |   33 |
-| 1004 | A Cup of Java              | Kumar        | 44.44 |   44 |
-| 1005 | A Teaspoon of Java         | Kevin Jones  | 55.55 |   55 |
-| 1006 | JAVA                       | dong         | 33.33 |    3 |
-| 1007 | JAdsfA                     | dsdfong      | 33.33 |    3 |
-| 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
--------------------------------------------------------------------
-
+If we do INSERT instead of DELETE in transaction, that will be phantom read. INSERT will not be blocked.
 
 Note that 1009 is still there because select 1 is before delete 1 because these restriction only takes effect when first read happens. If delete happens before select 1, result will be:
 
