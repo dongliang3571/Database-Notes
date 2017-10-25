@@ -542,6 +542,15 @@ MySQL 5.7.5 and earlier:
 ```
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('MyNewPass');
 ```
+### Auto Commit
+
+By default, MySQL runs with `autocommit` mode enabled. This means that as soon as you execute a statement that updates (modifies) a table, MySQL stores the update on disk to make it permanent. The change cannot be rolled back.
+
+You can disablt that with `SET autocommit=1` explicitly ()
+
+or do it implicitly with `START TRANSACTION`, by starting a transaction it will automatically disable autocommit.
+
+Note that, in **MyISAM**, there is no concept of transaction, so you have to use `SET autocommit=0` to prevent autocommit. InnoDB has transaction, so using `START TRANSACTION` is recommended way to do it.
 
 ### CREATE TABLE
 
