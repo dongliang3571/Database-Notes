@@ -155,9 +155,142 @@ A non-repeatable read occurs, when during the course of a transaction, a row is 
 
 A **non-repeatable** read occurs when transaction A retrieves a row, transaction B subsequently updates the row, and transaction A later retrieves the same row again. Transaction A retrieves the same row twice but sees different data.
 
+In **Mysql**, REPEATABLE READ is different from SQL Server.
+
+Example:
+
++------+----------------------------+--------------+-------+------+
+| id   | title                      | author       | price | qty  |
++------+----------------------------+--------------+-------+------+
+| 1001 | Java for dummies           | Tan Ah Teck  | 11.11 |   11 |
+| 1002 | More Java for dummies      | Tan Ah Teck  | 22.22 |   22 |
+| 1003 | More Java for more dummies | Mohammad Ali | 33.33 |   33 |
+| 1004 | A Cup of Java              | Kumar        | 44.44 |   44 |
+| 1005 | A Teaspoon of Java         | Kevin Jones  | 55.55 |   55 |
+| 1006 | JAVA                       | dong         | 33.33 |    3 |
+| 1007 | JAdsfA                     | dsdfong      | 33.33 |    3 |
+| 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+| 1009 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+-------------------------------------------------------------------
+
+transaction 1 with REPEATABLE READ isolation level
+
+```sql
+SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+START TRANSACTION;
+select * from books; -- select 1
+select sleep(10); -- sleep 1
+select * from books; -- select 2
+COMMIT;
+```
+
+transaction 2
+
+```sql
+DELETE from books WHERE id=1009; -- delete 1
+```
+
+If I execute transaction 2 while transaction 1 is doing sleep 1. select 2 will produce same result as select 1, because select 2 read the snapshot established by the select 1.
+
+result will be:
+
++------+----------------------------+--------------+-------+------+
+| id   | title                      | author       | price | qty  |
++------+----------------------------+--------------+-------+------+
+| 1001 | Java for dummies           | Tan Ah Teck  | 11.11 |   11 |
+| 1002 | More Java for dummies      | Tan Ah Teck  | 22.22 |   22 |
+| 1003 | More Java for more dummies | Mohammad Ali | 33.33 |   33 |
+| 1004 | A Cup of Java              | Kumar        | 44.44 |   44 |
+| 1005 | A Teaspoon of Java         | Kevin Jones  | 55.55 |   55 |
+| 1006 | JAVA                       | dong         | 33.33 |    3 |
+| 1007 | JAdsfA                     | dsdfong      | 33.33 |    3 |
+| 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+| 1009 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+-------------------------------------------------------------------
+
+But **SQL Server** will gives below with row 1009 deleted:
+
++------+----------------------------+--------------+-------+------+
+| id   | title                      | author       | price | qty  |
++------+----------------------------+--------------+-------+------+
+| 1001 | Java for dummies           | Tan Ah Teck  | 11.11 |   11 |
+| 1002 | More Java for dummies      | Tan Ah Teck  | 22.22 |   22 |
+| 1003 | More Java for more dummies | Mohammad Ali | 33.33 |   33 |
+| 1004 | A Cup of Java              | Kumar        | 44.44 |   44 |
+| 1005 | A Teaspoon of Java         | Kevin Jones  | 55.55 |   55 |
+| 1006 | JAVA                       | dong         | 33.33 |    3 |
+| 1007 | JAdsfA                     | dsdfong      | 33.33 |    3 |
+| 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+-------------------------------------------------------------------
+
+
+Note that 1009 is still there because select 1 is before delete 1 because these restriction only takes effect when first read happens. If delete happens before select 1, result will be:
+
++------+----------------------------+--------------+-------+------+
+| id   | title                      | author       | price | qty  |
++------+----------------------------+--------------+-------+------+
+| 1001 | Java for dummies           | Tan Ah Teck  | 11.11 |   11 |
+| 1002 | More Java for dummies      | Tan Ah Teck  | 22.22 |   22 |
+| 1003 | More Java for more dummies | Mohammad Ali | 33.33 |   33 |
+| 1004 | A Cup of Java              | Kumar        | 44.44 |   44 |
+| 1005 | A Teaspoon of Java         | Kevin Jones  | 55.55 |   55 |
+| 1006 | JAVA                       | dong         | 33.33 |    3 |
+| 1007 | JAdsfA                     | dsdfong      | 33.33 |    3 |
+| 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+-------------------------------------------------------------------
+
 **Phantom Read**
 
 A **phantom read** occurs when transaction A retrieves a set of rows satisfying a given condition, transaction B subsequently inserts or updates a row such that the row now meets the condition in transaction A, and transaction A later repeats the conditional retrieval. Transaction A now sees an additional row. This row is referred to as a phantom.
+
+same example:
+
++------+----------------------------+--------------+-------+------+
+| id   | title                      | author       | price | qty  |
++------+----------------------------+--------------+-------+------+
+| 1001 | Java for dummies           | Tan Ah Teck  | 11.11 |   11 |
+| 1002 | More Java for dummies      | Tan Ah Teck  | 22.22 |   22 |
+| 1003 | More Java for more dummies | Mohammad Ali | 33.33 |   33 |
+| 1004 | A Cup of Java              | Kumar        | 44.44 |   44 |
+| 1005 | A Teaspoon of Java         | Kevin Jones  | 55.55 |   55 |
+| 1006 | JAVA                       | dong         | 33.33 |    3 |
+| 1007 | JAdsfA                     | dsdfong      | 33.33 |    3 |
+| 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+| 1009 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+-------------------------------------------------------------------
+
+transaction 1 with SERIALIZABLE isolation level
+
+```sql
+SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+START TRANSACTION;
+select * from books; -- select 1
+select sleep(10); -- sleep 1
+select * from books; -- select 2
+COMMIT;
+```
+
+transaction 2
+
+```sql
+DELETE from books WHERE id=1009; -- delete 1
+```
+
+If I execute transaction 2 while transaction 1 is doing sleep 1. transaction 2 will wait until transaction 1 finishes and output will be:
+
++------+----------------------------+--------------+-------+------+
+| id   | title                      | author       | price | qty  |
++------+----------------------------+--------------+-------+------+
+| 1001 | Java for dummies           | Tan Ah Teck  | 11.11 |   11 |
+| 1002 | More Java for dummies      | Tan Ah Teck  | 22.22 |   22 |
+| 1003 | More Java for more dummies | Mohammad Ali | 33.33 |   33 |
+| 1004 | A Cup of Java              | Kumar        | 44.44 |   44 |
+| 1005 | A Teaspoon of Java         | Kevin Jones  | 55.55 |   55 |
+| 1006 | JAVA                       | dong         | 33.33 |    3 |
+| 1007 | JAdsfA                     | dsdfong      | 33.33 |    3 |
+| 1008 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+| 1009 | JsdfAdsfA                  | dssdfdfong   | 33.33 |    3 |
+-------------------------------------------------------------------
 
 ### Transactions & Locking tables
 
@@ -219,6 +352,14 @@ A request by T2 for an S lock can be granted immediately. As a result, both T1 a
 A request by T2 for an X lock cannot be granted immediately.
 
 If a transaction T1 holds an exclusive (X) lock on row r, a request from some distinct transaction T2 for a lock of either type on r cannot be granted immediately. Instead, transaction T2 has to wait for transaction T1 to release its lock on row r.
+
+`SELECT ... LOCK IN SHARE MODE`
+
+Sets a shared mode lock on any rows that are read. Other sessions can read the rows, but cannot modify them until your transaction commits. If any of these rows were changed by another transaction that has not yet committed, your query waits until that transaction ends and then uses the latest values.
+
+`SELECT ... FOR UPDATE`
+
+For index records the search encounters, locks the rows and any associated index entries, the same as if you issued an UPDATE statement for those rows. Other transactions are blocked from updating those rows, from doing SELECT ... LOCK IN SHARE MODE, or from reading the data in certain transaction isolation levels. Consistent reads ignore any locks set on the records that exist in the read view. (Old versions of a record cannot be locked; they are reconstructed by applying undo logs on an in-memory copy of the record.)
 
 **What happens if two mySQL queries both try to lock the same row at the same time?**
 
