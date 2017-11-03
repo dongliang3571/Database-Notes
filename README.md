@@ -294,6 +294,8 @@ If I execute transaction 2 while transaction 1 is doing sleep 1. transaction 2 w
 
 ### Transactions & Locking tables
 
+https://www.sqlshack.com/locking-sql-server/
+
 short version:
 
 - transactions as securing things inside your code path. 
