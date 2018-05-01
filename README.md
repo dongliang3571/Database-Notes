@@ -668,6 +668,54 @@ If someone is reading from a database at the same time as someone else is writin
 
 When an MVCC database needs to update an item of data, it will not overwrite the old data with new data, but instead marks the old data as obsolete and adds the newer version elsewhere. Thus there are multiple versions stored, but only one is the latest. This allows readers to access the data that was there when they began reading, even if it was modified or deleted part way through by someone else. It also allows the database to avoid the overhead of filling in holes in memory or disk structures but requires (generally) the system to periodically sweep through and delete the old, obsolete data objects. For a document-oriented database it also allows the system to optimize documents by writing entire documents onto contiguous sections of disk—when updated, the entire document can be re-written rather than bits and pieces cut out or maintained in a linked, non-contiguous database structure.
 
+## Postgresql
+
+`$PGDATA` where the data directory are
+
+for Fedora distribution, it locates on, for example, `/var/lib/pgsql/9.5`
+for Ubuntu distribution, it locates on, for example, `/var/lib/postgresql/9.5/main`
+
+or you can do
+
+```bash
+$ psql -U postgres
+postgres=# show data_directory
+
+# output is /var/lib/postgresql/9.5/main
+```
+
+or
+
+```bash
+$ pg_config
+
+BINDIR = /usr/lib/postgresql/9.5/bin
+DOCDIR = /usr/share/doc/postgresql-doc-9.5
+HTMLDIR = /usr/share/doc/postgresql-doc-9.5
+INCLUDEDIR = /usr/include/postgresql
+PKGINCLUDEDIR = /usr/include/postgresql
+INCLUDEDIR-SERVER = /usr/include/postgresql/9.5/server
+LIBDIR = /usr/lib/x86_64-linux-gnu
+PKGLIBDIR = /usr/lib/postgresql/9.5/lib
+LOCALEDIR = /usr/share/locale
+MANDIR = /usr/share/postgresql/9.5/man
+SHAREDIR = /usr/share/postgresql/9.5
+SYSCONFDIR = /etc/postgresql-common
+```
+
+`$libdir`
+
+for Fedora distribution it locates on, for example, `/usr/pgsql/lib` or `usr/lib/pgsql/lib`
+for Ubuntu distribution it locates onm for example, `/usr/lib/postgresql/9.5/lib`
+
+**`pg_dump`**
+
+```
+pg_dump -U <username> -W <password> -p <port> -F <format> -f <file_path_to_dump>
+```
+
+**`pg_restore`**
+
 ## MySql
 
 MySQL Server doesn't support the `SELECT ... INTO TABLE` Sybase SQL extension. Instead, MySQL Server supports the `INSERT INTO ... SELECT` standard SQL syntax, which is basically the same thing.
