@@ -2190,3 +2190,7 @@ where
 **Read consistency levels**
 
 [consistency levels](http://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlConfigConsistency.html#dmlConfigConsistency__dml-config-read-consistency)
+
+### Transaction
+
+https://sqlperformance.com/2018/11/sql-performance/understanding-log-buffer-flushes
