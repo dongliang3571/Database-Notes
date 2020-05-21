@@ -2058,6 +2058,8 @@ Dump this into Excel, and you can slice and dice - based on the parent table, th
 
 ## Cassandra
 
+https://medium.com/jorgeacetozi/cassandra-architecture-and-write-path-anatomy-51e339bcfe0c
+
 **Note: All nodes in cassandra cluster need to have same time otherwise either consistency will be broken or other problems**
 
 In Cassandra, **keyspaces** is corresponding to **database** in sql, **column family** us corresponding to **table** in sql. In **column family** we have **row key**, i.e unique identifier for each row, we can retrieve a row by using this **row key**. For each row, we will have multiple pair of **keys** and **values**, keys are colums, values are corresponding values for each column.
