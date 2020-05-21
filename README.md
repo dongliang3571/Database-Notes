@@ -2187,6 +2187,28 @@ where
 - W is the consistency level of write operations
 - N is the number of replicas
 
+**Contact point**
+
+https://stackoverflow.com/questions/55520942/i-need-to-pass-all-nodes-to-cassandra-client
+
+Question 1: Why do I need to pass these nodes?
+
+To make initial contact with the cluster. If the connection is made then there is no use with these contact points.
+
+Question 2: Do I need to pass all nodes? Or is one sufficient? (All nodes have the information about all other nodes, right?)
+
+You can pass only one node as contact point but the problem is if that node is down when the driver tries to contact then, it won't be able to connect to cluster. So if you provide another contact point it will try to connect with it even if the first one failed. It would be better if you use your Cassandra seed list as contact points.
+
+Question 3: Does the client choose the best node to connect knowing all nodes? Does the client know what data is stored in each node?
+
+Once the initial connection is made the client driver will have the metadata about the cluster. The client will know what data is stored in each node and also which node can be queried with less latency. you can configure all these using load balancing policies
+
+Refer: https://docs.datastax.com/en/developer/python-driver/3.10/api/cassandra/policies/
+
+Question 4: I'm starting to use cassandra for first time, and I'm using kubernetes for the first time. I deployed a cassandra cluster with 3 cassandra nodes. I deployed another one machine and in this machine I want to connect to cassandra by a Python Cassandra client. Do I need to pass all cassandra IPs to Python Cassandra client? Or is it sufficient to put the cassandra DNS given by Kubernetes?
+
+If the hostname can be resolved then it is always better to use DNS instead of IP. I don't see any disadvantage.
+
 **Read consistency levels**
 
 [consistency levels](http://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlConfigConsistency.html#dmlConfigConsistency__dml-config-read-consistency)
