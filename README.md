@@ -6,6 +6,56 @@ https://dev.mysql.com/doc/refman/5.5/en/replication.html
 
 ## ElasticSearch
 
+### Glossary of terms
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/glossary.html#index
+
+### What are mapping types?
+
+https://www.elastic.co/guide/en/elasticsearch/reference/7.9/removal-of-types.html
+
+### Analogy to relational database
+
+**Before ElasticSearch 8.0 (before removing the Type)**
+
+The easiest and most familiar layout clones what you would expect from a relational database. You can (very roughly) think of an index like a database.
+
+```
+MySQL         => Databases => Tables => Columns/Rows
+Elasticsearch => Indices   => Types  => Documents with Properties
+```
+
+An Elasticsearch cluster can contain multiple Indices (databases), which in turn contain multiple Types (tables). These types hold multiple Documents (rows), and each document has Properties(columns).
+
+So in your car manufacturing scenario, you may have a SubaruFactory index. Within this index, you have three different types:
+
+`People`
+
+`Cars`
+
+`Spare_Parts`
+
+Each type then contains documents that correspond to that type (e.g. a Subaru Imprezza doc lives inside of the Cars type. This doc contains all the details about that particular car).
+
+Searching and querying takes the format of: http://localhost:9200/[index]/[type]/[operation]
+
+So to retrieve the Subaru document, I may do this:
+
+```xml
+<strong>$ curl -XGET localhost:9200/SubaruFactory/Cars/SubaruImprezza
+</strong>
+```
+
+**After ElasticSearch 8.0 (after removing the Type)**
+
+After Type is removed, there will be only one Type in a Index, that is
+
+```
+MySQL =>         Databases => Tables  => Columns/Rows
+Elasticsearch => <N/A>     => Indices => Documents with Properties
+```
+
+
 ### Advantages
 
 - Elasticsearch is developed on Java, which makes it compatible on almost every platform.
