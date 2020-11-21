@@ -2271,6 +2271,30 @@ https://sqlperformance.com/2018/11/sql-performance/understanding-log-buffer-flus
 
 ## MongoDB
 
+#### Replica Set
+
+One primary node and a few secondary nodes form a replica set
+
+https://docs.mongodb.com/manual/replication/#replication-in-mongodb
+
+#### Sharding
+
+A cluster of `mongos`(router), a cluster of `config` nodes and a cluster of shards, each shard is a replica set
+
+https://docs.mongodb.com/manual/sharding/#sharded-cluster
+
 #### Oplog
 
 https://medium.com/@atharva.inamdar/understanding-mongodb-oplog-249f3996f528
+
+Oplog is just another collection(`oplog.rs`) under `local` database. 
+
+We are able to dump oplogs like we dump any other collections.
+
+**mongodump**
+
+How to dump oplogs
+```bash
+mongodump --host=localhost:27017 --authenticationDatabase=admin -u=username -p=password -d=local -c=oplog.rs --query='{"op": "i", "ns": "database.collection", "ts": { "$lt": Timestamp(1605837774, 1)}}'
+```
+
