@@ -2268,3 +2268,9 @@ If the hostname can be resolved then it is always better to use DNS instead of I
 ### Transaction
 
 https://sqlperformance.com/2018/11/sql-performance/understanding-log-buffer-flushes
+
+## MongoDB
+
+#### Oplog
+
+https://medium.com/@atharva.inamdar/understanding-mongodb-oplog-249f3996f528
