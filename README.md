@@ -2298,3 +2298,14 @@ How to dump oplogs
 mongodump --host=localhost:27017 --authenticationDatabase=admin -u=username -p=password -d=local -c=oplog.rs --query='{"op": "i", "ns": "database.collection", "ts": { "$lt": Timestamp(1605837774, 1)}}'
 ```
 
+**mongorestore**
+
+How to restore from oplogs
+
+```bash
+mongorestore --host=localhost:27017 --authenticationDatabase=admin -u=username -p=password --oplogReplay oplog_BSON_from_mongodump
+```
+
+#### How to restore deleted mongo documents
+
+https://tarunbatra.com/blog/data/Restore-deleted-MongoDB-documents-using-Oplog/
