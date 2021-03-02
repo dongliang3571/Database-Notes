@@ -6,6 +6,11 @@ https://dev.mysql.com/doc/refman/5.5/en/replication.html
 
 ## ElasticSearch
 
+### Join/Parent-child
+
+https://medium.com/swlh/parent-and-child-joins-with-elasticsearch-7-381f6cca73fe
+https://www.elastic.co/guide/en/elasticsearch/reference/current/parent-join.html
+
 ### Glossary of terms
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/glossary.html#index
