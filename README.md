@@ -6,6 +6,10 @@ https://dev.mysql.com/doc/refman/5.5/en/replication.html
 
 ## ElasticSearch
 
+### Supported Geo-Shapes
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-shape.html#input-structure
+
 ### Join/Parent-child
 
 https://medium.com/swlh/parent-and-child-joins-with-elasticsearch-7-381f6cca73fe
