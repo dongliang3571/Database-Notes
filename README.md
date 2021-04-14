@@ -10,6 +10,10 @@ https://dev.mysql.com/doc/refman/5.5/en/replication.html
 
 https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-shape.html#input-structure
 
+### Spatial relations
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-shape-query.html#_spatial_relations
+
 ### Join/Parent-child
 
 https://medium.com/swlh/parent-and-child-joins-with-elasticsearch-7-381f6cca73fe
