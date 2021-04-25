@@ -2343,6 +2343,26 @@ Shard Key Selection:
 ![image](https://user-images.githubusercontent.com/11860146/115977284-8acd4680-a544-11eb-9ee1-1e49fe2b1362.png)
 
 
+##### Considerations Before Sharding
+
+Sharded cluster infrastructure requirements and complexity require careful planning, execution, and maintenance.
+
+**Once a collection has been sharded, MongoDB provides no method to unshard a sharded collection.**
+
+
+##### Sharded and Non-Sharded Collections
+
+A database can have a mixture of sharded and unsharded collections. Sharded collections are partitioned and distributed across the shards in the cluster. Unsharded collections are stored on a primary shard. Each database has its own primary shard.
+
+##### primary shard
+
+![image](https://user-images.githubusercontent.com/11860146/115977463-7e49ed80-a546-11eb-8b21-b8529eb0e038.png)
+
+##### Connecting to a Sharded Cluster
+
+![image](https://user-images.githubusercontent.com/11860146/115977470-928dea80-a546-11eb-8bb3-646a2a5fe235.png)
+
+
 #### Oplog
 
 https://medium.com/@atharva.inamdar/understanding-mongodb-oplog-249f3996f528
