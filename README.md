@@ -2329,6 +2329,11 @@ Shard Key Selection:
 
 ![image](https://user-images.githubusercontent.com/11860146/115977569-75a5e700-a547-11eb-82b3-00970fd10149.png)
 
+- Hashed Sharding Shard Key
+    ![image](https://user-images.githubusercontent.com/11860146/115977875-d0404280-a549-11eb-86ab-372287d430ec.png)
+
+- Hashed vs Ranged Sharding
+    ![image](https://user-images.githubusercontent.com/11860146/115977893-fbc32d00-a549-11eb-8869-c4aa7f65e600.png)
 
 ##### Shard Key Cardinality
 
