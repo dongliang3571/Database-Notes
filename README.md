@@ -2379,6 +2379,12 @@ A database can have a mixture of sharded and unsharded collections. Sharded coll
 - Broadcast Operations
     ![image](https://user-images.githubusercontent.com/11860146/115977662-f8c73d00-a547-11eb-87d6-fabe747b390f.png)
 
+##### Zones
+
+![image](https://user-images.githubusercontent.com/11860146/115978042-04683300-a54b-11eb-9456-12e2942b2b3a.png)
+
+![image](https://user-images.githubusercontent.com/11860146/115978047-121db880-a54b-11eb-85f9-19131298ff90.png)
+
 
 #### Oplog
 
