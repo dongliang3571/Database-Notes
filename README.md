@@ -2327,6 +2327,8 @@ Shard Key Selection:
 
 ##### Hashed sharding
 
+![image](https://user-images.githubusercontent.com/11860146/115977569-75a5e700-a547-11eb-82b3-00970fd10149.png)
+
 
 ##### Shard Key Cardinality
 
@@ -2361,6 +2363,16 @@ A database can have a mixture of sharded and unsharded collections. Sharded coll
 ##### Connecting to a Sharded Cluster
 
 ![image](https://user-images.githubusercontent.com/11860146/115977470-928dea80-a546-11eb-8bb3-646a2a5fe235.png)
+
+##### Targeted Operations vs. Broadcast Operations
+
+![image](https://user-images.githubusercontent.com/11860146/115977651-d2a19d00-a547-11eb-9e45-e02537a281e4.png)
+
+- Targeted Operations
+    ![image](https://user-images.githubusercontent.com/11860146/115977695-43e15000-a548-11eb-81e7-9009ed4b64bf.png)
+
+- Broadcast Operations
+    ![image](https://user-images.githubusercontent.com/11860146/115977662-f8c73d00-a547-11eb-87d6-fabe747b390f.png)
 
 
 #### Oplog
