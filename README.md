@@ -2296,6 +2296,53 @@ A cluster of `mongos`(router), a cluster of `config` nodes and a cluster of shar
 
 https://docs.mongodb.com/manual/sharding/#sharded-cluster
 
+
+##### How to enable sharding on a collection
+
+```javascript
+sh.enableSharding("database-name")
+sh.shardCollection(<namespace>, <key>) // Optional parameters omitted
+// <namespace> - The namespace of the collection to shard in the form "<database>.<collection>".
+// <key> - The document that specifies the field or fields to use as the shard key.
+//         { <field1>: <1|"hashed">, ... }
+//         Set the field value to either:
+//             -  1 for ranged based sharding
+//             - "hashed" to specify a hashed shard key.
+```
+
+Note that shard key must be supported by an index. Unless the collection is empty, the index must exist prior to the shardCollection command. If the collection  is empty, MongoDB creates the index prior to sharding the collection if the index that can support the shard key does not already exist.
+
+##### Range based sharding
+
+https://docs.mongodb.com/manual/core/ranged-sharding/
+![image](https://user-images.githubusercontent.com/11860146/115977191-bdc30a80-a543-11eb-8614-b56efa19d12b.png)
+
+Shard Key Selection:
+    Ranged sharding is most efficient when the shard key displays the following traits:
+
+    - Large Shard Key Cardinality
+    - Low Shard Key Frequency
+    - Non-Shard Key Monotonicity
+    
+
+##### Hashed sharding
+
+
+##### Shard Key Cardinality
+
+![image](https://user-images.githubusercontent.com/11860146/115977252-33c77180-a544-11eb-95f1-ca0dc05e2f52.png)
+
+
+##### Shard Key Frequency
+
+![image](https://user-images.githubusercontent.com/11860146/115977264-59ed1180-a544-11eb-925b-10fe9e9ee82b.png)
+
+
+##### Shard Key Monotonicity
+
+![image](https://user-images.githubusercontent.com/11860146/115977284-8acd4680-a544-11eb-9ee1-1e49fe2b1362.png)
+
+
 #### Oplog
 
 https://medium.com/@atharva.inamdar/understanding-mongodb-oplog-249f3996f528
